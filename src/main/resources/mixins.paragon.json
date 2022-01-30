@@ -1,0 +1,10 @@
+{
+    "required": true,
+    "compatibilityLevel": "JAVA_8",
+    "package": "com.paragon.asm.mixins",
+    "refmap": "mixins.paragon.refmap.json",
+    "minVersion": "0.7.4",
+    "mixins": [
+        "MixinGuiMainMenu"
+    ]
+}

@@ -1,0 +1,87 @@
+buildscript {
+    repositories {
+        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url 'https://repo.spongepowered.org/maven' }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+
+version = modVersion
+group = modGroup
+archivesBaseName = modID
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2768"
+    runDir = "run"
+    mappings = "snapshot_20171003"
+    coreMod = "com.paragon.asm.MixinLoader"
+    makeObfSourceJar = false // This is bloat
+}
+
+mixin {
+    defaultObfuscationEnv searge
+
+    sourceSets {
+        main {
+            ext.refmap = "mixins.paragon.refmap.json"
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven { url = "https://jitpack.io" }
+}
+
+dependencies {
+    compile('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
+    }
+
+    compile "com.github.ZeroMemes:Alpine:1.5"
+    compile group: 'net.jodah', name: 'typetools', version: '0.6.3'
+    compile('club.minnced:java-discord-rpc:2.0.2') { exclude module: 'jna' }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest.attributes(
+        'MixinConfigs': mixinConfig,
+        'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+        'TweakOrder': 0,
+        'FMLCorePlugin': mixinClass,
+        'ForceLoadAsMod': 'true'
+    )
+}
+
+sourceSets { main { output.resourcesDir = output.classesDir } }
+
+// Should you want to run the client through IDEA, comment the below line by putting '//' before it
+sourceSets { sourceSets -> main }
