@@ -8,6 +8,8 @@ import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.gui.components.Window;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -66,22 +68,31 @@ public class CategoryComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     public void renderCategory(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), getParentWindow().getSelectedCategory() == this ? new Color(WindowGUI.buttonColour).brighter().getRGB() : WindowGUI.buttonColour);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), getParentWindow().getSelectedCategory() == this ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
         renderText(getCategory().getName(), getX() + 4, getY() + 3, -1);
 
         if(getParentWindow().getSelectedCategory() == this) {
-            RenderUtil.drawRect(getParentWindow().getX() + 2, getParentWindow().getY() + 35, 197, 263, WindowGUI.generalColour);
+            RenderUtil.drawRect(getParentWindow().getX() + 2, getParentWindow().getY() + 35, 197, 263, GUI.buttonBackgroundColour.getColour().getRGB());
             for (ModuleButtonComponent moduleButtonComponent : moduleButtons) moduleButtonComponent.render(mouseX, mouseY);
-            RenderUtil.drawRect(getX(), getY() + getHeight() - 1, getWidth(), 1, WindowGUI.mainColour);
+            RenderUtil.drawRect(getX(), getY() + getHeight(), getWidth(), 1, Colours.mainColour.getColour().getRGB());
         }
     }
 
     /**
-     * Called when the button is clicked
+     * Called when the mouse is clicked
+     * @param mouseX The mouse's X
+     * @param mouseY The mouse's Y
      */
-    public void whenClicked() {
-        // Sets the window's category to this component's category
-        getParentWindow().setSelectedCategory(this);
+    public void mouseClicked(int mouseX, int mouseY, int mouseClicked) {
+        if(GuiUtil.mouseOver(getX(), getY(), getX() + getWidth(), getY() + getHeight(), mouseX, mouseY)) {
+            getParentWindow().setSelectedCategory(this);
+        }
+
+        if(getParentWindow().getSelectedCategory() == this) {
+            for (ModuleButtonComponent moduleButtonComponent : moduleButtons) {
+                moduleButtonComponent.mouseClicked(mouseX, mouseY, mouseClicked);
+            }
+        }
     }
 
     public boolean isMouseOnButton(int mouseX, int mouseY) {

@@ -6,6 +6,7 @@ import com.paragon.api.util.render.ColourUtil;
 import com.paragon.client.Paragon;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
+import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
 import me.zero.alpine.listener.EventHandler;
@@ -20,20 +21,31 @@ import java.util.List;
 
 public class HUD extends Module implements TextRenderer {
 
+    private final BooleanSetting watermark = new BooleanSetting("Watermark", "Draws the client's name in the top left", true);
+
     private final BooleanSetting arrayList = new BooleanSetting("Array List", "Render the enabled modules on screen", true);
     private final ModeSetting arrayListColour = new ModeSetting("Array List Colour", "What colour to render the modules in", "Rainbow Wave", new String[]{"Rainbow Wave", "Rainbow", "Static"});
 
     public HUD() {
-        super("HUD", "Render the client's HUD on screen", Category.HUD);
-        this.addSettings(arrayList, arrayListColour);
+        super("HUD", "Render the client's HUD on screen", Category.OTHER);
+        this.addSettings(watermark, arrayList, arrayListColour);
         this.toggle();
     }
 
     @EventHandler
     private final Listener<RenderGUIEvent> renderGUIEventListener = new Listener<>(event -> {
-        ScaledResolution sr = new ScaledResolution(mc);
+        drawWatermark();
+        drawArrayList();
+    });
 
+    public void drawWatermark() {
+        if(watermark.isEnabled())
+            renderText("Paragon " + TextFormatting.GRAY + Paragon.VERSION, 3, 3, Colours.mainColour.getColour().getRGB());
+    }
+
+    public void drawArrayList() {
         if(arrayList.isEnabled()) {
+            ScaledResolution sr = new ScaledResolution(mc);
             float y = sr.getScaledHeight() - 11;
 
             int index = 0;
@@ -51,13 +63,12 @@ public class HUD extends Module implements TextRenderer {
                 index++;
             }
         }
-
-    });
+    }
 
     public int getArrayListColour(int index) {
         if(arrayListColour.is("Rainbow Wave")) return ColourUtil.getRainbow(4, 1, index);
         else if(arrayListColour.is("Rainbow")) return ColourUtil.getRainbow(4, 1, 0);
-        else if(arrayListColour.is("Static")) return Paragon.mainColour;
+        else if(arrayListColour.is("Static")) return Colours.mainColour.getColour().getRGB();
         return -1;
     }
 }

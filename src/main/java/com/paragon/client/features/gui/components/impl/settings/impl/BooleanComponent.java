@@ -6,6 +6,8 @@ import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.gui.components.Window;
 import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
 import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import org.lwjgl.opengl.GL11;
 
@@ -40,9 +42,9 @@ public class BooleanComponent extends SettingComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     @Override public void render(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), WindowGUI.buttonColour);
-        if(booleanSetting.isEnabled()) RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), WindowGUI.mainColour);
-        renderText(booleanSetting.getName(), getX() + 3, getY() + 3, -1);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        if(booleanSetting.isEnabled()) RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
+        renderText(booleanSetting.getName(), getX() + 3, getY() + 3, booleanSetting.isEnabled() ? Colours.mainColour.getColour().getRGB() : -1);
 
         GL11.glPushMatrix();
         GL11.glScalef(.5f, .5f, 0); // Shrink scale

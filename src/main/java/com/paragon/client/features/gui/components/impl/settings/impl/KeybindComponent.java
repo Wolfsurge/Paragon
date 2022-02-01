@@ -7,6 +7,8 @@ import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.gui.components.Window;
 import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
 import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.KeybindSetting;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
@@ -46,10 +48,10 @@ public class KeybindComponent extends SettingComponent implements TextRenderer {
      */
     @Override public void render(int mouseX, int mouseY) {
         // Render background
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), WindowGUI.buttonColour);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
 
         // Render bar if listening
-        if(isListening) RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), WindowGUI.mainColour);
+        if(isListening) RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
 
         // Render text
         renderText(keybindSetting.getName() + TextFormatting.GRAY + " " + (isListening ? "..." : Keyboard.getKeyName(keybindSetting.getKeyCode())), getX() + 3, getY() + 3, -1);

@@ -6,18 +6,15 @@ import com.paragon.api.util.render.RenderUtil;
 import com.paragon.client.Paragon;
 import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
-import com.paragon.client.features.gui.components.impl.settings.impl.ModeComponent;
-import com.paragon.client.features.gui.components.impl.settings.impl.SliderComponent;
+import com.paragon.client.features.gui.components.impl.settings.impl.*;
 import com.paragon.client.features.module.Module;
-import com.paragon.client.features.gui.components.impl.settings.impl.BooleanComponent;
-import com.paragon.client.features.gui.components.impl.settings.impl.KeybindComponent;
+import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.Setting;
-import com.paragon.client.features.module.settings.impl.BooleanSetting;
-import com.paragon.client.features.module.settings.impl.KeybindSetting;
-import com.paragon.client.features.module.settings.impl.ModeSetting;
-import com.paragon.client.features.module.settings.impl.NumberSetting;
+import com.paragon.client.features.module.settings.impl.*;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import scala.xml.PrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +49,17 @@ public class ModuleButtonComponent implements TextRenderer {
         // Add the settings
         float yOffset = getParentCategory().getY() + 20;
         for(Setting s : getModule().getSettings()) {
-            if(s instanceof BooleanSetting) settingComponents.add(new BooleanComponent(this, getParentCategory().getParentWindow(), (BooleanSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset));
-            else if(s instanceof ModeSetting) settingComponents.add(new ModeComponent(this, getParentCategory().getParentWindow(), (ModeSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset));
-            else if(s instanceof NumberSetting) settingComponents.add(new SliderComponent(this, getParentCategory().getParentWindow(), (NumberSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset));
-            else if(s instanceof KeybindSetting) settingComponents.add(new KeybindComponent(this, getParentCategory().getParentWindow(), (KeybindSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset));
+            SettingComponent settingComponent = null;
+            if(s instanceof BooleanSetting) settingComponent = new BooleanComponent(this, getParentCategory().getParentWindow(), (BooleanSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset);
+            else if(s instanceof ModeSetting) settingComponent = new ModeComponent(this, getParentCategory().getParentWindow(), (ModeSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset);
+            else if(s instanceof NumberSetting) settingComponent = new SliderComponent(this, getParentCategory().getParentWindow(), (NumberSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset);
+            else if(s instanceof KeybindSetting) settingComponent = new KeybindComponent(this, getParentCategory().getParentWindow(), (KeybindSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset);
+            else if(s instanceof ColourSetting) settingComponent = new ColourComponent(this, getParentCategory().getParentWindow(), (ColourSetting) s, getParentCategory().getParentWindow().getX() + 204, yOffset);
             else continue;
 
-            yOffset += 21;
+            getSettingComponents().add(settingComponent);
+            
+            yOffset += settingComponent.getHeight();
         }
     }
 
@@ -68,58 +69,74 @@ public class ModuleButtonComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     public void render(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), WindowGUI.buttonColour);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
 
         // Module outline
-        if(getModule().isEnabled() || getParentCategory().getSelectedModule() == getModule() && GUI.settingOutline.isEnabled()) RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), WindowGUI.mainColour);
+        if(getModule().isEnabled() || getParentCategory().getSelectedModule() == getModule() && GUI.settingOutline.isEnabled())
+            RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
 
-        renderText(getModule().getName(), getX() + 3, getY() + 3, getModule().isEnabled() ? Paragon.mainColour : -1);
+        renderText(getModule().getName(), getX() + 3, getY() + 3, getModule().isEnabled() ? Colours.mainColour.getColour().getRGB() : -1);
 
         GL11.glPushMatrix();
         GL11.glScalef(.5f, .5f, 0); // Shrink scale
         renderText(getModule().getDescription(), (getX() + 3) * 2, (getY() + 13) * 2, -1);
         GL11.glPopMatrix();
 
-        renderText("Visible", getX() + getWidth() - 40, getY() + 6, getModule().isVisible() ? WindowGUI.mainColour : -1);
+        renderText("Visible", getX() + getWidth() - 40, getY() + 6, getModule().isVisible() ? Colours.mainColour.getColour().getRGB() : -1);
 
         if(getParentCategory().getSelectedModule() == getModule()) {
+            RenderUtil.startGlScissor(getParentCategory().getParentWindow().getX() + 203, getParentCategory().getY() + 21, 197, 258);
             for(SettingComponent settingComponent : settingComponents) {
                 settingComponent.render(mouseX, mouseY);
             }
+            RenderUtil.endGlScissor();
         }
 
         // Setting Outline
         if(getParentCategory().getSelectedModule() == getModule() && GUI.settingOutline.isEnabled()) {
             // Module
-            RenderUtil.drawRect(getX(), getY(), getWidth() + 4, 1, Paragon.mainColour);
-            RenderUtil.drawRect(getX(), getY() + getHeight() - 1, getWidth() + 4, 1, Paragon.mainColour);
+            RenderUtil.drawRect(getX(), getY(), getWidth() + 4, 1, Colours.mainColour.getColour().getRGB());
+            RenderUtil.drawRect(getX(), getY() + getHeight() - 1, getWidth() + 4, 1, Colours.mainColour.getColour().getRGB());
 
             // Settings
-            RenderUtil.drawRect(getX() + getWidth() + 4, parentCategory.getY() + 18, 1, 263, Paragon.mainColour);
-            RenderUtil.drawRect(getX() + getWidth() + 4, parentCategory.getY() + 18 + 263, 197, 1, Paragon.mainColour);
-            RenderUtil.drawRect(getX() + getWidth() + 201, parentCategory.getY() + 18, 1, 264, Paragon.mainColour);
-            RenderUtil.drawRect(getX() + getWidth() + 4, parentCategory.getY() + 18, 197, 1, Paragon.mainColour);
+            RenderUtil.drawRect(getX() + getWidth() + 4, parentCategory.getY() + 18, 1, 263, Colours.mainColour.getColour().getRGB());
+            RenderUtil.drawRect(getX() + getWidth() + 4, parentCategory.getY() + 18 + 263, 197, 1, Colours.mainColour.getColour().getRGB());
+            RenderUtil.drawRect(getX() + getWidth() + 201, parentCategory.getY() + 18, 1, 264, Colours.mainColour.getColour().getRGB());
+            RenderUtil.drawRect(getX() + getWidth() + 4, parentCategory.getY() + 18, 197, 1, Colours.mainColour.getColour().getRGB());
 
             // Space
-            RenderUtil.drawRect(getX() + getWidth() + 4, getY() + 1, 1, getHeight() - 2, WindowGUI.buttonColour);
+            RenderUtil.drawRect(getX() + getWidth() + 4, getY() + 1, 1, getHeight() - 2, GUI.buttonColour.getColour().getRGB());
+        } else if(getParentCategory().getSelectedModule() == getModule()) {
+            RenderUtil.drawRect(getX() + getWidth() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         }
 
+        settingMouseScroll(mouseX, mouseY);
     }
 
     /**
-     * Called when the button is clicked
+     * Called when the mouse is clicked
      * @param mouseX The mouse's X
      * @param mouseY The mouse's Y
-     * @param mouseButton The button which is clicked
      */
-    public void whenClicked(int mouseX, int mouseY, int mouseButton) {
-        // toggle module
-        if(mouseButton == 0 && GuiUtil.mouseOver(getX(), getY(), getX() + getWidth() - 41, getY() + getHeight(), mouseX, mouseY)) getModule().toggle();
-        // toggle module visibility
-        else if(mouseButton == 0 && GuiUtil.mouseOver(getX() + getWidth() - 40, getY(), getX() + getWidth(), getY() + getHeight(), mouseX, mouseY)) getModule().setVisible(!getModule().isVisible());
-        // set selected module to this
-        else if(mouseButton == 1) getParentCategory().setSelectedModule(getModule());
+    public void mouseClicked(int mouseX, int mouseY, int mouseClicked) {
+        if(isMouseOnButton(mouseX, mouseY)) {
+            // toggle module
+            if (mouseClicked == 0 && GuiUtil.mouseOver(getX(), getY(), getX() + getWidth() - 41, getY() + getHeight(), mouseX, mouseY))
+                getModule().toggle();
+                // toggle module visibility
+            else if (mouseClicked == 0 && GuiUtil.mouseOver(getX() + getWidth() - 40, getY(), getX() + getWidth(), getY() + getHeight(), mouseX, mouseY))
+                getModule().setVisible(!getModule().isVisible());
+                // set selected module to this
+            else if (mouseClicked == 1) {
+                getParentCategory().setSelectedModule(getModule());
+                System.out.println(module.getName());
+            }
+        } else if(isMouseOverSettings(mouseX, mouseY) && getParentCategory().getSelectedModule() == getModule()) {
+            for(SettingComponent settingComponent : settingComponents)
+                if(settingComponent.isMouseOnButton(mouseX, mouseY)) settingComponent.whenClicked(mouseX, mouseY, mouseClicked);
+        }
     }
+
 
     /**
      * Triggered when the mouse is released
@@ -130,6 +147,36 @@ public class ModuleButtonComponent implements TextRenderer {
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         for(SettingComponent settingComponent : getSettingComponents())
             settingComponent.mouseReleased(mouseX, mouseY, mouseButton);
+    }
+
+    /**
+     * Checks if the mouse is over the settings compartment
+     * @param mouseX The mouse's X
+     * @param mouseY The mouse's Y
+     * @return Is the mouse over the settings compartment
+     */
+    public boolean isMouseOverSettings(int mouseX, int mouseY) {
+        return GuiUtil.mouseOver(getParentCategory().getParentWindow().getX() + 203, getParentCategory().getY() + 20, getParentCategory().getParentWindow().getX() + 400, getParentCategory().getY() + 283, mouseX, mouseY);
+    }
+
+    public void settingMouseScroll(int mouseX, int mouseY) {
+        SettingComponent firstSettingComponent = getSettingComponents().get(0);
+        SettingComponent lastSettingComponent = getSettingComponents().get(getSettingComponents().size() - 1);
+
+        int mouseWheel = Mouse.getDWheel();
+        // Setting Scrolling
+        if(isMouseOverSettings(mouseX, mouseY)) {
+            if(mouseWheel < 0) {
+                float settingEndY = (getParentCategory().getParentWindow().getY() + 35 + 263) - lastSettingComponent.getHeight();
+                if (lastSettingComponent.getY() > settingEndY)
+                    for(SettingComponent settingComponent : getSettingComponents())
+                        settingComponent.setY(settingComponent.getY() - 10);
+            } else if(mouseWheel > 0) {
+                if (firstSettingComponent.getY() < getParentCategory().getY() + 20)
+                    for(SettingComponent settingComponent : getSettingComponents())
+                        settingComponent.setY(settingComponent.getY() + 10);
+            }
+        }
     }
 
     /**

@@ -6,6 +6,8 @@ import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.gui.components.Window;
 import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
 import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
@@ -41,8 +43,8 @@ public class ModeComponent extends SettingComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     @Override public void render(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), WindowGUI.buttonColour);
-        RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), WindowGUI.mainColour);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         renderText(modeSetting.getName() + TextFormatting.GRAY + " " + modeSetting.getCurrentMode(), getX() + 3, getY() + 3, -1);
 
         GL11.glPushMatrix();

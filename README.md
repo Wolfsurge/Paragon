@@ -8,8 +8,11 @@ Todo for 1.0 Release:
 - [Better] Offhand
 - NCP Bypassing Step
 - ESP
-- Tracers
+- Tracers [Done]
 - AutoEZ
 - Panel GUI
-- Colour Pickers
+- Colour Pickers [Done]
 - Commands
+
+# Credits
+- Wurst +3 - Colour Picker base

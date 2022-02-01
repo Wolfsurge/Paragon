@@ -16,12 +16,6 @@ import java.io.IOException;
  */
 public class WindowGUI extends GuiScreen {
 
-    // Colours - To be removed at some point
-    public static int backgroundColour = new Color(17, 17, 17).getRGB();
-    public static int buttonColour = new Color(23, 23, 23).getRGB();
-    public static int generalColour = new Color(20, 20, 20).getRGB();
-    public static int mainColour = Paragon.mainColour;
-
     // The window to be rendered
     private final Window mainWindow;
 

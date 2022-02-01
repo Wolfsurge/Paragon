@@ -26,8 +26,6 @@ public class Paragon
     public static ModuleManager moduleManager;
     public static WindowGUI windowGUI;
 
-    public static int mainColour = new Color(128, 128, 255).getRGB();
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {

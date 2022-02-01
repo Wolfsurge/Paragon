@@ -8,7 +8,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import scala.xml.PrettyPrinter;
 
 public class EventParser {
 
@@ -23,21 +22,21 @@ public class EventParser {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if(Minecraft.getMinecraft().player == null || Minecraft.getMinecraft().world == null) return;
 
-        Paragon.EVENT_BUS.post(new UpdateEvent.Client());
+        Paragon.EVENT_BUS.post(new UpdateEvent(UpdateEvent.Type.Client));
     }
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
         if(Minecraft.getMinecraft().player == null || Minecraft.getMinecraft().world == null) return;
 
-        Paragon.EVENT_BUS.post(new UpdateEvent.Server());
+        Paragon.EVENT_BUS.post(new UpdateEvent(UpdateEvent.Type.Server));
     }
 
     @SubscribeEvent
     public void onBothTick(TickEvent event) {
         if(Minecraft.getMinecraft().player == null || Minecraft.getMinecraft().world == null) return;
 
-        Paragon.EVENT_BUS.post(new UpdateEvent.Both());
+        Paragon.EVENT_BUS.post(new UpdateEvent(UpdateEvent.Type.Both));
     }
 
     @SubscribeEvent

@@ -3,10 +3,11 @@ package com.paragon.client.features.gui.components.impl.settings.impl;
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
-import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.gui.components.Window;
 import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
 import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
@@ -50,7 +51,7 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
     @Override public void render(int mouseX, int mouseY) {
         update(mouseX, mouseY);
 
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), WindowGUI.buttonColour);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
         renderText(numberSetting.getName() + TextFormatting.GRAY + " " + numberSetting.getValue() + " / " + numberSetting.getMax(), getX() + 3, getY() + 3, -1);
 
         GL11.glPushMatrix();
@@ -58,7 +59,7 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
         renderText(numberSetting.getDescription(), (getX() + 3) * 2, (getY() + 13) * 2, -1);
         GL11.glPopMatrix();
 
-        RenderUtil.drawRect(getX(), getY() + getHeight() - 1, renderWidth, 1, WindowGUI.mainColour);
+        RenderUtil.drawRect(getX(), getY() + getHeight() - 1, renderWidth, 1, Colours.mainColour.getColour().getRGB());
     }
 
     public void update(int mouseX, int mouseY) {
@@ -72,8 +73,7 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
         if (dragging) {
             if (diff == 0) {
                 numberSetting.setValue(numberSetting.getMin());
-            }
-            else {
+            } else {
                 float newValue = roundToPlace(((diff / 193) * (max - min) + min), 2);
                 numberSetting.setValue(newValue);
             }
@@ -102,12 +102,16 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
      * @param mouseButton The button that is clicked
      */
     @Override public void whenClicked(int mouseX, int mouseY, int mouseButton) {
-        if(isMouseOnButtonI(mouseX, mouseY) || isMouseOnButtonD(mouseX, mouseY))
+        if(isMouseOnButton(mouseX, mouseY))
             dragging = true;
     }
 
     @Override public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         dragging = false;
+    }
+
+    public boolean isMouseOnButton(int mouseX, int mouseY) {
+        return GuiUtil.mouseOver(getX(), getY(), getX() + getWidth(), getY() + getHeight(), mouseX, mouseY);
     }
 
     /**
@@ -140,13 +144,5 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
      */
     public void setParentModuleButton(ModuleButtonComponent parentModuleButton) {
         this.parentModuleButton = parentModuleButton;
-    }
-
-    public boolean isMouseOnButtonD(int mX, int mY) {
-        return GuiUtil.mouseOver(getX(), getY(), getX() + (getWidth() / 2f), getY() + getHeight(), mX, mY);
-    }
-
-    public boolean isMouseOnButtonI(int mX, int mY) {
-        return GuiUtil.mouseOver(getX() + (getWidth() / 2f), getY(), getX() + getWidth(), getY() + getHeight(), mX, mY);
     }
 }

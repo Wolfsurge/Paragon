@@ -2,11 +2,14 @@ package com.paragon.client.features.gui.components;
 
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.RenderUtil;
+import com.paragon.client.Paragon;
 import com.paragon.client.features.gui.WindowGUI;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.gui.components.impl.CategoryComponent;
 import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
 import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,21 +69,31 @@ public class Window implements TextRenderer {
      */
     public void render(int mouseX, int mouseY) {
         // Main Background
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), WindowGUI.backgroundColour);
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.backgroundColour.getColour().getRGB());
 
         // Title
-        RenderUtil.drawRect(getX(), getY() + 15, getWidth(), 1, WindowGUI.mainColour);
+        RenderUtil.drawRect(getX(), getY() + 15, getWidth(), 1, Colours.mainColour.getColour().getRGB());
         renderText(getTitle(), getX() + 3, getY() + 3.5f, -1);
 
         // Setting Background
-        RenderUtil.drawRect(getX() + 201, getY() + 35, 197, 263, WindowGUI.generalColour);
+        RenderUtil.drawRect(getX() + 201, getY() + 35, 197, 263, GUI.buttonBackgroundColour.getColour().getRGB());
 
         // Render categories
         for(CategoryComponent categoryComponent : categoryButtons)
             categoryComponent.renderCategory(mouseX, mouseY);
 
         // Separator
-        RenderUtil.drawRect(getX(), getY() + 32, getWidth(), 1, WindowGUI.mainColour);
+        if(GUI.separator.isEnabled())
+            RenderUtil.drawRect(getX(), getY() + 32, getWidth(), 1, Colours.mainColour.getColour().getRGB());
+
+        // Window outline
+        if(GUI.windowOutline.isEnabled()) {
+            RenderUtil.drawRect(getX(), getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
+            RenderUtil.drawRect(getX() + getWidth() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
+
+            RenderUtil.drawRect(getX(), getY(), getWidth(), 1, Colours.mainColour.getColour().getRGB());
+            RenderUtil.drawRect(getX(), getY() + getHeight() - 1, getWidth(), 1, Colours.mainColour.getColour().getRGB());
+        }
     }
 
     /**
@@ -91,25 +104,8 @@ public class Window implements TextRenderer {
      */
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         for(CategoryComponent categoryComponent : categoryButtons) {
-            if(categoryComponent.isMouseOnButton(mouseX, mouseY)) {
-                categoryComponent.whenClicked();
-            }
+            categoryComponent.mouseClicked(mouseX, mouseY, mouseButton);
         }
-
-        for(ModuleButtonComponent moduleButtonComponent : getSelectedCategory().getModuleButtons()) {
-            if(moduleButtonComponent.isMouseOnButton(mouseX, mouseY)) {
-                moduleButtonComponent.whenClicked(mouseX, mouseY,  mouseButton);
-            }
-
-            if(getSelectedCategory().getSelectedModule() == moduleButtonComponent.getModule()) {
-                for(SettingComponent settingComponent : moduleButtonComponent.getSettingComponents()) {
-                    if(settingComponent.isMouseOnButton(mouseX, mouseY)) {
-                        settingComponent.whenClicked(mouseX, mouseY, mouseButton);
-                    }
-                }
-            }
-        }
-
     }
 
     /**

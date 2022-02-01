@@ -24,12 +24,12 @@ public enum Category {
     /**
      * Modules that aren't really modules in the usual sense
      */
-    OTHER("Other"),
+    OTHER("Other");
 
-    /**
+    /* /**
      * Modules that are drawn on the screen
-     */
-    HUD("HUD");
+
+    HUD("HUD"); */
 
     /**
      * Creates a new category

@@ -17,7 +17,7 @@ public class AutoTotem extends Module {
     }
 
     @EventHandler
-    private final Listener<UpdateEvent.Client> clientListener = new Listener<>(event -> {
+    private final Listener<UpdateEvent> clientListener = new Listener<>(event -> {
         doAutoTotem();
     });
 

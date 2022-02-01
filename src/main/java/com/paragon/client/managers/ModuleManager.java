@@ -2,11 +2,14 @@ package com.paragon.client.managers;
 
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
+import com.paragon.client.features.module.impl.combat.AutoCrystal;
 import com.paragon.client.features.module.impl.combat.AutoTotem;
 import com.paragon.client.features.module.impl.hud.HUD;
 import com.paragon.client.features.module.impl.movement.Flight;
 import com.paragon.client.features.module.impl.movement.Step;
+import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
+import com.paragon.client.features.module.impl.render.Tracers;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -25,13 +28,17 @@ public class ModuleManager {
     }
 
     public void init() {
+        modules.add(new AutoCrystal());
         modules.add(new AutoTotem());
 
         modules.add(new Step());
         modules.add(new Flight());
 
+        modules.add(new Tracers());
+
         modules.add(new HUD());
         modules.add(new GUI());
+        modules.add(new Colours());
     }
 
     /**
@@ -45,6 +52,10 @@ public class ModuleManager {
         return categoryModules;
     }
 
+    /**
+     * Toggles modules based on whether their keybind is pressed
+     * @param event The key input event
+     */
     @SubscribeEvent
     public void onKey(InputEvent.KeyInputEvent event) {
         if(Keyboard.getEventKeyState()) {

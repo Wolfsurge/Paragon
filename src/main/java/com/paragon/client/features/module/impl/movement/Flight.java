@@ -18,7 +18,7 @@ public class Flight extends Module {
     }
 
     @EventHandler
-    private final Listener<UpdateEvent.Client> updateEventListener = new Listener<>(event -> {
+    private final Listener<UpdateEvent> updateEventListener = new Listener<>(event -> {
         mc.player.capabilities.isFlying = true;
     });
 
