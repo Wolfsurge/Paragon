@@ -129,7 +129,6 @@ public class ModuleButtonComponent implements TextRenderer {
                 // set selected module to this
             else if (mouseClicked == 1) {
                 getParentCategory().setSelectedModule(getModule());
-                System.out.println(module.getName());
             }
         } else if(isMouseOverSettings(mouseX, mouseY) && getParentCategory().getSelectedModule() == getModule()) {
             for(SettingComponent settingComponent : settingComponents)

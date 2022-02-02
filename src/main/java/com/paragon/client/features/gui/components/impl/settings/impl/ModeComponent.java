@@ -44,7 +44,7 @@ public class ModeComponent extends SettingComponent implements TextRenderer {
      */
     @Override public void render(int mouseX, int mouseY) {
         RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
-        RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
+        RenderUtil.drawRect(getX(), getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         renderText(modeSetting.getName() + TextFormatting.GRAY + " " + modeSetting.getCurrentMode(), getX() + 3, getY() + 3, -1);
 
         GL11.glPushMatrix();

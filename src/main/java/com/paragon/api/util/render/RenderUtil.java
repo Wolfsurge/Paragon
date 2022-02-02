@@ -1,13 +1,18 @@
 package com.paragon.api.util.render;
 
+import com.paragon.api.util.world.BlockUtil;
 import com.paragon.api.util.world.EntityUtil;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
@@ -88,7 +93,7 @@ public class RenderUtil {
     }
 
     /**
-     * Draws a line from
+     * Draws a line from one pos to another
      * @param x1 Start X
      * @param y1 Start Y
      * @param z1 Start Z
@@ -136,16 +141,25 @@ public class RenderUtil {
      * @param col The colour of the line
      */
     public static void drawTracer(Entity e, float lineWidth, Color col) {
-        Vec3d vec = EntityUtil.getInterpolatedPosition(e, mc.getRenderPartialTicks());
+        Vec3d vec = EntityUtil.getInterpolatedPosition(e);
         double x = vec.x - mc.getRenderManager().viewerPosX;
         double y = vec.y - mc.getRenderManager().viewerPosY;
         double z = vec.z - mc.getRenderManager().viewerPosZ;
 
         Vec3d eyes = (new Vec3d(0.0D, 0.0D, 1.0D)).rotatePitch(-((float)Math.toRadians(mc.player.rotationPitch))).rotateYaw( -((float)Math.toRadians(mc.player.rotationYaw)));
 
+        if(col.getAlpha() == 0) return;
+
         drawLine3D(eyes.x, eyes.y + mc.player.getEyeHeight(), eyes.z, x, y + (e.height / 2), z, col.getRGB(), true, lineWidth);
     }
 
+    /**
+     * Starts scissoring a rect
+     * @param x X coord
+     * @param y Y coord
+     * @param width Width of scissor
+     * @param height Height of scissor
+     */
     public static void startGlScissor(double x, double y, double width, double height) {
         glPushAttrib(GL_SCISSOR_BIT);
         {
@@ -154,6 +168,9 @@ public class RenderUtil {
         }
     }
 
+    /**
+     * Disables scissor
+     */
     public static void endGlScissor() {
         glDisable(GL_SCISSOR_TEST);
         glPopAttrib();
@@ -180,7 +197,16 @@ public class RenderUtil {
         GL11.glScissor((int) x, (int) (y - height), (int) width, (int) height);
     }
 
-    public static void leftGradient(double mx, double my, double max, double may, int startColor, int endColor) {
+    /**
+     * Draws a gradient rect. From W +3, for the colour pickers.
+     * @param mx Min X
+     * @param my Min Y
+     * @param max Max X
+     * @param may Max Y
+     * @param startColour Start colour of the rect
+     * @param endColour End colour of the rect
+     */
+    public static void leftGradient(double mx, double my, double max, double may, int startColour, int endColour) {
         float minX = (float) mx;
         float minY = (float) my;
         float maxX = (float) max;
@@ -190,15 +216,29 @@ public class RenderUtil {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glShadeModel(GL_SMOOTH);
         glBegin(GL_POLYGON);
-        glColor4f((startColor >> 16 & 0xFF) / 255.0f, (startColor >> 8 & 0xFF) / 255.0f, (startColor & 0xFF) / 255.0f, (startColor >> 24 & 0xFF) / 255.0f);
+        glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
         glVertex2f(minX, minY);
         glVertex2f(minX, maxY);
-        glColor4f((endColor >> 16 & 0xFF) / 255.0f, (endColor >> 8 & 0xFF) / 255.0f, (endColor & 0xFF) / 255.0f, (endColor >> 24 & 0xFF) / 255.0f);
+        glColor4f((endColour >> 16 & 0xFF) / 255.0f, (endColour >> 8 & 0xFF) / 255.0f, (endColour & 0xFF) / 255.0f, (endColour >> 24 & 0xFF) / 255.0f);
         glVertex2f(maxX, maxY);
         glVertex2f(maxX, minY);
         glEnd();
         glShadeModel(GL_FLAT);
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
+    }
+
+    public static void drawBoundingBox(AxisAlignedBB axisAlignedBB, float lineThickness, Color colour) {
+        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glLineWidth(lineThickness);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(false);
+        RenderGlobal.drawSelectionBoundingBox(axisAlignedBB, colour.getRed() / 255f, colour.getGreen() / 255f, colour.getBlue() / 255f, colour.getAlpha() / 255f);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }

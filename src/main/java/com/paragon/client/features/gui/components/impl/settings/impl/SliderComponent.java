@@ -1,5 +1,6 @@
 package com.paragon.client.features.gui.components.impl.settings.impl;
 
+import com.paragon.api.util.miscellaneous.MathUtils;
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
@@ -74,25 +75,10 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
             if (diff == 0) {
                 numberSetting.setValue(numberSetting.getMin());
             } else {
-                float newValue = roundToPlace(((diff / 193) * (max - min) + min), 2);
+                float newValue = (float) MathUtils.roundDouble(((diff / 193) * (max - min) + min), 2);
                 numberSetting.setValue(newValue);
             }
         }
-    }
-
-    /**
-     * Rounds a value to the nearest place
-     * @param value The value input
-     * @param places How many places to round to
-     * @return Rounded value
-     */
-    private static float roundToPlace(double value, int places) {
-        if (places < 0) {
-            throw new IllegalArgumentException();
-        }
-        BigDecimal bd = new BigDecimal(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.floatValue();
     }
 
     /**

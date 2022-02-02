@@ -51,7 +51,7 @@ public class KeybindComponent extends SettingComponent implements TextRenderer {
         RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
 
         // Render bar if listening
-        if(isListening) RenderUtil.drawRect(getX() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
+        if(isListening) RenderUtil.drawRect(getX(), getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
 
         // Render text
         renderText(keybindSetting.getName() + TextFormatting.GRAY + " " + (isListening ? "..." : Keyboard.getKeyName(keybindSetting.getKeyCode())), getX() + 3, getY() + 3, -1);
