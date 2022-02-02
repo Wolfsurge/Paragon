@@ -12,6 +12,8 @@ import com.paragon.client.features.module.settings.impl.ModeSetting;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+
 /**
  * @author Wolfsurge
  * @since 30/01/22

@@ -1,5 +1,7 @@
 package com.paragon.client.features.module.impl.render;
 
+import com.paragon.api.event.events.RenderEntityEvent;
+import com.paragon.api.util.render.OutlineUtil;
 import com.paragon.api.util.render.RenderUtil;
 import com.paragon.api.util.world.EntityUtil;
 import com.paragon.client.features.module.Category;
@@ -8,6 +10,8 @@ import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -52,6 +56,22 @@ public class ESP extends Module {
         }
     }
 
+    @EventHandler
+    private final Listener<RenderEntityEvent> renderEntityEventListener = new Listener<>(event -> {
+        if(isEntityValid(event.getEntity()) && mode.is("Outline")) {
+            OutlineUtil.renderOne(lineWidth.getValue());
+            event.renderModel();
+            OutlineUtil.renderTwo();
+            event.renderModel();
+            OutlineUtil.renderThree();
+            event.renderModel();
+            OutlineUtil.renderFour(getColourByEntity(event.getEntity()));
+            event.renderModel();
+            OutlineUtil.renderFive();
+            event.renderModel();
+        }
+    });
+
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {
         for(Entity e : mc.world.loadedEntityList) {
@@ -66,15 +86,15 @@ public class ESP extends Module {
      * @param entityIn The entity to highlight
      */
     public void espEntity(Entity entityIn) {
+        if(!((entityIn instanceof EntityItem) || (entityIn instanceof EntityEnderCrystal)) && mode.is("Outline")) return;
+
         // Set it glowing if it's an item
         if(entityIn instanceof EntityItem) {
             entityIn.setGlowing(true);
             return;
         }
 
-        if(mode.is("Outline"))
-            mode.cycleMode(); // not implemented
-        else if(mode.is("Box"))
+        if(mode.is("Box"))
             RenderUtil.drawBoundingBox(EntityUtil.getEntityBox(entityIn), lineWidth.getValue(), getColourByEntity(entityIn));
         else if(mode.is("Glow"))
             entityIn.setGlowing(true);

@@ -22,7 +22,7 @@ public class WindowGUI extends GuiScreen {
     public WindowGUI() {
         ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
         // Create window
-        mainWindow = new Window("Paragon " + Paragon.VERSION, DisplayUtil.getDisplayWidth() / 2f - 200, DisplayUtil.getDisplayHeight() / 2f - 150, 400, 300);
+        mainWindow = new Window("Paragon " + Paragon.VERSION, scaledResolution.getScaledWidth() / 2f - 200, scaledResolution.getScaledHeight() / 2f - 150, 400, 300);
     }
 
     @Override

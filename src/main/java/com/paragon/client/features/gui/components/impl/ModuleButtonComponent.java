@@ -59,7 +59,7 @@ public class ModuleButtonComponent implements TextRenderer {
 
             getSettingComponents().add(settingComponent);
             
-            yOffset += settingComponent.getHeight();
+            yOffset += settingComponent.getHeight() + .5f;
         }
     }
 
@@ -85,7 +85,8 @@ public class ModuleButtonComponent implements TextRenderer {
         renderText("Visible", getX() + getWidth() - 40, getY() + 6, getModule().isVisible() ? Colours.mainColour.getColour().getRGB() : -1);
 
         if(getParentCategory().getSelectedModule() == getModule()) {
-            RenderUtil.startGlScissor(getParentCategory().getParentWindow().getX() + 203, getParentCategory().getY() + 21, 197, 258);
+            RenderUtil.startGlScissor(getParentCategory().getParentWindow().getX() + 203, getParentCategory().getY() + 21, 197, 259);
+            settingMouseScroll(mouseX, mouseY);
             for(SettingComponent settingComponent : settingComponents) {
                 settingComponent.render(mouseX, mouseY);
             }
@@ -109,8 +110,6 @@ public class ModuleButtonComponent implements TextRenderer {
         } else if(getParentCategory().getSelectedModule() == getModule()) {
             RenderUtil.drawRect(getX() + getWidth() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         }
-
-        settingMouseScroll(mouseX, mouseY);
     }
 
     /**
