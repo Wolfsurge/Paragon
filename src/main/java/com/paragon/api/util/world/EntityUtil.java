@@ -56,12 +56,12 @@ public class EntityUtil {
      */
     public static AxisAlignedBB getEntityBox(Entity entity) {
         return new AxisAlignedBB(
-                entity.getEntityBoundingBox().minX - 0.05 - entity.posX + (entity.posX - mc.getRenderManager().viewerPosX),
+                entity.getEntityBoundingBox().minX - entity.posX + (entity.posX - mc.getRenderManager().viewerPosX),
                 entity.getEntityBoundingBox().minY - entity.posY + (entity.posY - mc.getRenderManager().viewerPosY),
-                entity.getEntityBoundingBox().minZ - 0.05 - entity.posZ + (entity.posZ - mc.getRenderManager().viewerPosZ),
-                entity.getEntityBoundingBox().maxX + 0.05 - entity.posX + (entity.posX - mc.getRenderManager().viewerPosX),
-                entity.getEntityBoundingBox().maxY + 0.1 - entity.posY + (entity.posY - mc.getRenderManager().viewerPosY),
-                entity.getEntityBoundingBox().maxZ + 0.05 - entity.posZ + (entity.posZ - mc.getRenderManager().viewerPosZ)
+                entity.getEntityBoundingBox().minZ - entity.posZ + (entity.posZ - mc.getRenderManager().viewerPosZ),
+                entity.getEntityBoundingBox().maxX - entity.posX + (entity.posX - mc.getRenderManager().viewerPosX),
+                entity.getEntityBoundingBox().maxY - entity.posY + (entity.posY - mc.getRenderManager().viewerPosY),
+                entity.getEntityBoundingBox().maxZ - entity.posZ + (entity.posZ - mc.getRenderManager().viewerPosZ)
         );
     }
 

@@ -44,6 +44,11 @@ public class Tracers extends Module {
         }
     }
 
+    /**
+     * Checks if an entity is valid
+     * @param entityIn The entity to check
+     * @return Is the entity valid
+     */
     private boolean isEntityValid(Entity entityIn) {
         if(entityIn instanceof EntityLiving && !(entityIn instanceof EntityMob) && passive.isEnabled()) return true;
         else if(entityIn instanceof EntityMob && mobs.isEnabled()) return true;
@@ -51,6 +56,11 @@ public class Tracers extends Module {
         else return entityIn instanceof EntityEnderCrystal && crystals.isEnabled();
     }
 
+    /**
+     * Gets the entity's colour
+     * @param entityIn The entity
+     * @return The entity's colour
+     */
     private Color getColourByEntity(Entity entityIn) {
         if(entityIn instanceof EntityLiving && !(entityIn instanceof EntityMob)) return passiveColour.getColour();
         else if(entityIn instanceof EntityMob) return mobColour.getColour();

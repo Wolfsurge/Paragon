@@ -9,6 +9,7 @@ import com.paragon.client.features.module.impl.movement.Flight;
 import com.paragon.client.features.module.impl.movement.Step;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
+import com.paragon.client.features.module.impl.render.ESP;
 import com.paragon.client.features.module.impl.render.Tracers;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -34,6 +35,7 @@ public class ModuleManager {
         modules.add(new Step());
         modules.add(new Flight());
 
+        modules.add(new ESP());
         modules.add(new Tracers());
 
         modules.add(new HUD());
