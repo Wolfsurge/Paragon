@@ -7,7 +7,7 @@ Todo for 1.0 Release:
 - AutoCrystal
 - [Better] Offhand
 - NCP Bypassing Step
-- ESP
+- ESP [only needs outline now]
 - Tracers [Done]
 - AutoEZ
 - Panel GUI
