@@ -38,7 +38,7 @@ public class BooleanComponent extends SettingComponent implements TextRenderer {
         setWidth(193);
         setHeight(20);
 
-        float offset = getY() + getHeight() + 1;
+        float offset = getY() + getHeight() + 0.5f;
 
         for (Setting setting : booleanSetting.getSubsettings()) {
             SettingComponent settingComponent = null;
@@ -60,7 +60,7 @@ public class BooleanComponent extends SettingComponent implements TextRenderer {
             }
 
             settingComponents.add(settingComponent);
-            offset += settingComponent.getHeight() + 1;
+            offset += settingComponent.getHeight() + 0.5f;
         }
     }
 
@@ -70,7 +70,7 @@ public class BooleanComponent extends SettingComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     @Override public void render(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), isMouseOnButton(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
         if(booleanSetting.isEnabled()) RenderUtil.drawRect(getX(), getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         renderText(booleanSetting.getName(), getX() + 3, getY() + 3, booleanSetting.isEnabled() ? Colours.mainColour.getColour().getRGB() : -1);
 
@@ -83,6 +83,10 @@ public class BooleanComponent extends SettingComponent implements TextRenderer {
             for (SettingComponent settingComponent : settingComponents) {
                 settingComponent.render(mouseX, mouseY);
             }
+        }
+
+        if (!settingComponents.isEmpty()) {
+            renderText("...", getX() + getWidth() - 15, getY() + 4.5f, -1);
         }
 
         refreshOffsets();

@@ -42,7 +42,7 @@ public class ModeComponent extends SettingComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     @Override public void render(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), isMouseOnButton(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
         RenderUtil.drawRect(getX(), getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         renderText(modeSetting.getName() + TextFormatting.GRAY + " " + modeSetting.getCurrentMode(), getX() + 3, getY() + 3, -1);
 

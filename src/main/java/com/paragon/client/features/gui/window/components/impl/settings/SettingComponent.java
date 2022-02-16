@@ -31,7 +31,7 @@ public class SettingComponent {
         float settingHeight = 0f;
 
         for (SettingComponent settingComponent : settingComponents) {
-            settingHeight += settingComponent.getHeight() + 1;
+            settingHeight += settingComponent.getHeight() + 0.5f;
         }
 
         return expanded ? settingHeight : 0;
@@ -39,11 +39,11 @@ public class SettingComponent {
 
     // Refresh subsetting offsets
     public void refreshOffsets() {
-        float offset = getY() + getHeight() + 1;
+        float offset = getY() + getHeight() + 0.5f;
 
         for (SettingComponent settingComponent : settingComponents) {
             settingComponent.setY(offset);
-            offset += settingComponent.getHeight() + 1;
+            offset += settingComponent.getHeight() + 0.5f;
         }
     }
 

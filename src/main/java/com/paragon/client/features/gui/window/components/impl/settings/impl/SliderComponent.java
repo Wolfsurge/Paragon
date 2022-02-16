@@ -76,7 +76,7 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
     @Override public void render(int mouseX, int mouseY) {
         update(mouseX, mouseY);
 
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), isMouseOnButton(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
         renderText(numberSetting.getName() + TextFormatting.GRAY + " " + numberSetting.getValue() + " / " + numberSetting.getMax(), getX() + 3, getY() + 3, -1);
 
         GL11.glPushMatrix();

@@ -15,6 +15,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -213,12 +214,49 @@ public class RenderUtil implements Wrapper {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glShadeModel(GL_SMOOTH);
         glBegin(GL_POLYGON);
+
         glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
         glVertex2f(minX, minY);
+
+        glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
         glVertex2f(minX, maxY);
+
         glColor4f((endColour >> 16 & 0xFF) / 255.0f, (endColour >> 8 & 0xFF) / 255.0f, (endColour & 0xFF) / 255.0f, (endColour >> 24 & 0xFF) / 255.0f);
         glVertex2f(maxX, maxY);
+
+        glColor4f((endColour >> 16 & 0xFF) / 255.0f, (endColour >> 8 & 0xFF) / 255.0f, (endColour & 0xFF) / 255.0f, (endColour >> 24 & 0xFF) / 255.0f);
         glVertex2f(maxX, minY);
+
+        glEnd();
+        glShadeModel(GL_FLAT);
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL_BLEND);
+    }
+
+    public static void drawGradientRect(float x, float y, float width, float height, int startColour, int endColour) {
+        glEnable(GL_BLEND);
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glShadeModel(GL_SMOOTH);
+        glBegin(GL_POLYGON);
+
+        // glColor4f((endColour >> 16 & 0xFF) / 255.0f, (endColour >> 8 & 0xFF) / 255.0f, (endColour & 0xFF) / 255.0f, (endColour >> 24 & 0xFF) / 255.0f);
+        // glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
+
+        glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
+        glVertex2f(x, y);
+
+        glColor4f((endColour >> 16 & 0xFF) / 255.0f, (endColour >> 8 & 0xFF) / 255.0f, (endColour & 0xFF) / 255.0f, (endColour >> 24 & 0xFF) / 255.0f);
+        glVertex2f(x, y + height);
+
+        glColor4f((endColour >> 16 & 0xFF) / 255.0f, (endColour >> 8 & 0xFF) / 255.0f, (endColour & 0xFF) / 255.0f, (endColour >> 24 & 0xFF) / 255.0f);
+        glVertex2f(x + width, y + height);
+
+        glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
+        glVertex2f(x + width, y);
+
+        // glColor4f((startColour >> 16 & 0xFF) / 255.0f, (startColour >> 8 & 0xFF) / 255.0f, (startColour & 0xFF) / 255.0f, (startColour >> 24 & 0xFF) / 255.0f);
+
         glEnd();
         glShadeModel(GL_FLAT);
         glEnable(GL_TEXTURE_2D);

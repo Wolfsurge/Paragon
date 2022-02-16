@@ -66,7 +66,7 @@ public class ModuleButtonComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      */
     public void render(int mouseX, int mouseY) {
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), isMouseOnButton(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
 
         // Module outline
         if(getModule().isEnabled() || getParentCategory().getSelectedModule() == getModule() && GUI.settingOutline.isEnabled())

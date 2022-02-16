@@ -2,7 +2,6 @@ package com.paragon.client.features.module.impl.combat;
 
 import com.paragon.api.event.events.UpdateEvent;
 import com.paragon.api.event.events.network.PacketEvent;
-import com.paragon.api.util.combat.CrystalUtil;
 import com.paragon.api.util.player.InventoryUtil;
 import com.paragon.api.util.player.RotationUtil;
 import com.paragon.api.util.render.ColourUtil;
@@ -19,24 +18,35 @@ import com.paragon.client.features.module.settings.impl.ModeSetting;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
 import com.paragon.client.managers.rotation.Rotation;
 import com.paragon.client.managers.rotation.RotationType;
-import it.unimi.dsi.fastutil.booleans.BooleanSet;
 import me.zero.alpine.listener.EventHandler;
 import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSpawnObject;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.CombatRules;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Explosion;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -64,13 +74,16 @@ public class AutoCrystal extends Module {
     private final ModeSetting when = (ModeSetting) new ModeSetting("When", "When to place crystals", "Holding", new String[]{"Holding", "Switch", "Silent Switch"}).setParentSetting(place);
     private final NumberSetting placeRange = (NumberSetting) new NumberSetting("Place Range", "The limit on how far away you place crystals", 5, 1, 9, 1).setParentSetting(place);
     private final ModeSetting placeRotation = (ModeSetting) new ModeSetting("Rotate", "How to rotate when placing the crystal", "Packet", new String[]{"Packet", "Legit", "None"}).setParentSetting(place);
+    private final NumberSetting placeCooldown = (NumberSetting) new NumberSetting("Place Cooldown", "How long to cool down for", 0, 0, 80, 1).setParentSetting(place);
 
     // Breaking
     private final BooleanSetting breakCrystals = new BooleanSetting("Break", "Break crystals around you", true);
     private final NumberSetting breakRange = (NumberSetting) new NumberSetting("Break Range", "The range in which to break crystals", 5, 2, 8, 1).setParentSetting(breakCrystals);
-    private final ModeSetting breakLogic = (ModeSetting) new ModeSetting("Break Logic", "Which crystals to break", "Smart", new String[]{"All", "Self", "Smart", "Self Smart", "All Smart"}).setParentSetting(breakCrystals);
+    private final ModeSetting breakLogic = (ModeSetting) new ModeSetting("Break Logic", "Which crystals to break", "Smart", new String[]{"All", "Self", "Smart", "Self Smart"}).setParentSetting(breakCrystals);
     private final BooleanSetting instant = (BooleanSetting) new BooleanSetting("Instant", "Instantly hit crystals", true).setParentSetting(breakCrystals);
     private final BooleanSetting swing = (BooleanSetting) new BooleanSetting("Swing", "Swing your hand when you break a crystal", true).setParentSetting(breakCrystals);
+    private final ModeSetting breakRotation = (ModeSetting) new ModeSetting("Rotate", "How to rotate when breaking crystals", "Packet", new String[]{"Packet", "Legit", "None"}).setParentSetting(breakCrystals);
+    private final BooleanSetting breakSwing = (BooleanSetting) new BooleanSetting("Swing", "Swing the player's hand when breaking a crystal", true).setParentSetting(breakCrystals);
     private final ModeSetting antiWeakness = (ModeSetting) new ModeSetting("Anti Weakness", "Lets you be able to break crystals whilst under the weakness effect", "Off", new String[]{"Off", "Switch", "Silent Switch"}).setParentSetting(breakCrystals);
 
     // Other
@@ -94,6 +107,8 @@ public class AutoCrystal extends Module {
     // Variables
     private EntityPlayer currentTarget; // The current player being targeted
     private final ArrayList<BlockPos> selfPlacedCrystals = new ArrayList<>(); // List of self placed crystals
+
+    private int placeCooldownCount = 0;
 
     public AutoCrystal() {
         super("AutoCrystal", "Automatically places and breaks crystals", Category.COMBAT);
@@ -155,7 +170,7 @@ public class AutoCrystal extends Module {
                     EntityEnderCrystal crystal = (EntityEnderCrystal) entity;
 
                     if (canBreakCrystal(crystal, currentTarget) && isCrystalInRange(crystal)) {
-                        mc.getConnection().sendPacket(new CPacketUseEntity(crystal));
+                        breakCrystal(crystal);
                     }
                 }
             });
@@ -164,6 +179,16 @@ public class AutoCrystal extends Module {
 
     public void placeCrystals() {
         if(place.isEnabled()) {
+            placeCooldownCount--;
+
+            if (placeCooldownCount > 0) {
+                return;
+            }
+
+            if (placeCooldownCount == 0) {
+                placeCooldownCount = (int) placeCooldown.getValue();
+            }
+
             if(!prePlace()) return;
 
             if (getBestPosition(currentTarget) != null) {
@@ -186,13 +211,13 @@ public class AutoCrystal extends Module {
                         return;
                     }
 
-                    // Cancel if its less than the minimum damage
-                    if ((breakLogic.is("Smart") || breakLogic.is("Self Smart") || breakLogic.is("All Smart")) && CrystalUtil.calculate(pos, currentTarget) <= minimumDamage.getValue()) {
+                    // Cancel if the damage is less than the minimum damage
+                    if ((breakLogic.is("Smart") || breakLogic.is("Self Smart") || breakLogic.is("All Smart")) && calculateCrystalDamage(pos, currentTarget) <= minimumDamage.getValue()) {
                         return;
                     }
 
                     // Cancel if the damage to the player is higher than max local
-                    if ((breakLogic.is("Smart") || breakLogic.is("Self Smart") || breakLogic.is("All Smart")) && CrystalUtil.calculate(pos, mc.player) >= maximumLocalDamage.getValue()) {
+                    if ((breakLogic.is("Smart") || breakLogic.is("Self Smart") || breakLogic.is("All Smart")) && calculateCrystalDamage(pos, mc.player) >= maximumLocalDamage.getValue()) {
                         return;
                     }
 
@@ -214,7 +239,7 @@ public class AutoCrystal extends Module {
 
         for (BlockPos pos : getPlaceableBlocks(target)) {
             // If currentBest is null, set this position to currentBest
-            if (currentBest == null || CrystalUtil.calculate(pos, target) > CrystalUtil.calculate(currentBest, target)) {
+            if (currentBest == null || calculateCrystalDamage(pos, target) > calculateCrystalDamage(currentBest, target)) {
                 currentBest = pos;
             }
         }
@@ -268,8 +293,9 @@ public class AutoCrystal extends Module {
             Collections.reverse(playerEntities);
 
         // If the list isn't empty, return the best player
-        if(!playerEntities.isEmpty())
+        if(!playerEntities.isEmpty()) {
             return (EntityPlayer) playerEntities.get(0);
+        }
 
         else return null;
     }
@@ -361,8 +387,41 @@ public class AutoCrystal extends Module {
         return entityEnderCrystal.getDistance(mc.player) <= breakRange.getValue();
     }
 
-    public void breakCrystal() {
+    public void breakCrystal(EntityEnderCrystal crystal) {
+        int antiWeaknessOldSlot = mc.player.inventory.currentItem;
 
+        if (!antiWeakness.is("Off")) {
+            // Weakness
+            PotionEffect weakness = mc.player.getActivePotionEffect(MobEffects.WEAKNESS);
+            // Strength
+            PotionEffect strength = mc.player.getActivePotionEffect(MobEffects.STRENGTH);
+
+            // Switch if we cannot break the crystal with our hands
+            if (weakness != null && (strength == null || strength.getAmplifier() < weakness.getAmplifier())) {
+                InventoryUtil.switchToItem(Items.DIAMOND_SWORD, antiWeakness.is("Silent Switch"));
+            }
+        }
+
+        // Rotate to crystal
+        Vec2f rotation = RotationUtil.getRotationToVec3d(new Vec3d(crystal.posX + 0.5f, crystal.posY + 0.5f, crystal.posZ + 0.5f));
+        new Rotation(rotation.x, rotation.y, RotationType.valueOf(breakRotation.getCurrentMode().toUpperCase())).doRotation();
+
+        if (instant.isEnabled()) {
+            // Send a CPacketUseEntity to instant break the crystal
+            mc.getConnection().sendPacket(new CPacketUseEntity(crystal));
+        } else {
+            // Attack the entity
+            mc.playerController.attackEntity(mc.player, crystal);
+        }
+
+        if (breakSwing.isEnabled()) {
+            mc.player.swingArm(EnumHand.MAIN_HAND);
+        }
+
+        if (!antiWeakness.is("Off")) {
+            // Switch back
+            mc.getConnection().sendPacket(new CPacketHeldItemChange(antiWeaknessOldSlot));
+        }
     }
 
     public void instantHit(int id) {
@@ -385,7 +444,7 @@ public class AutoCrystal extends Module {
      * @return Whether the position's damage is less than maximum local and bigger than minimum
      */
     public boolean isWithinDamageParameters(BlockPos pos, Entity target) {
-        return CrystalUtil.calculate(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, target) >= minimumDamage.getValue() / 36.0f && CrystalUtil.calculate(pos, mc.player) <= maximumLocalDamage.getValue() / 36.0f;
+        return calculateCrystalDamage(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, target) >= minimumDamage.getValue() / 36.0f && calculateCrystalDamage(pos, mc.player) <= maximumLocalDamage.getValue() / 36.0f;
     }
 
     /**
@@ -404,6 +463,62 @@ public class AutoCrystal extends Module {
         currentTarget = getBestTarget();
 
         return currentTarget != null;
+    }
+
+    /**
+     * Calculates crystal damage from given positions
+     * @param posX The X position
+     * @param posY The Y position
+     * @param posZ The Z position
+     * @param entity The entity to calculate damage for
+     * @return The damage
+     */
+    public float calculateCrystalDamage(double posX, double posY, double posZ, Entity entity) {
+        double factor = (1.0 - entity.getDistance(posX, posY, posZ) / 12.0) * entity.world.getBlockDensity(new Vec3d(posX, posY, posZ), entity.getEntityBoundingBox());
+
+        float calculatedDamage = (float) (int) ((factor * factor + factor) / 2.0f * 7.0f * 12.0f + 1.0f);
+
+        double damage = 1.0;
+
+        if (entity instanceof EntityLivingBase) {
+            damage = getBlastReduction((EntityLivingBase) entity, calculatedDamage * ((mc.world.getDifficulty().getDifficultyId() == 0) ? 0.0f : ((mc.world.getDifficulty().getDifficultyId() == 2) ? 1.0f : ((mc.world.getDifficulty().getDifficultyId() == 1) ? 0.5f : 1.5f))), new Explosion(mc.world, entity, posX, posY, posZ, 6.0f, false, true));
+        }
+
+        return (float) damage;
+    }
+
+    /**
+     * Gets the blast reduction of a crystal explosion
+     * @param entityLivingBase The entity to calculate damage for
+     * @param damage The given damage
+     * @param explosion The explosion to calculate
+     * @return The blast reduction
+     */
+    public float getBlastReduction(EntityLivingBase entityLivingBase, float damage, Explosion explosion) {
+        if (entityLivingBase instanceof EntityPlayer) {
+            damage = CombatRules.getDamageAfterAbsorb(damage, (float) entityLivingBase.getTotalArmorValue(), (float) entityLivingBase.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+            damage *= 1.0f - MathHelper.clamp((float) EnchantmentHelper.getEnchantmentModifierDamage(entityLivingBase.getArmorInventoryList(), DamageSource.causeExplosionDamage(explosion)), 0.0f, 20.0f) / 25.0f;
+
+            if (entityLivingBase.isPotionActive(MobEffects.RESISTANCE)) {
+                damage -= damage / 4.0f;
+            }
+
+            return damage;
+        }
+
+        damage = CombatRules.getDamageAfterAbsorb(damage, (float) entityLivingBase.getTotalArmorValue(), (float) entityLivingBase.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+
+        return damage;
+    }
+
+    /**
+     * Calculates crystal damage from a block position
+     * @param pos The given position
+     * @param entity The entity to calculate damage for
+     * @return The calculated damage
+     */
+    public float calculateCrystalDamage(BlockPos pos, Entity entity) {
+        return calculateCrystalDamage(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, entity);
     }
 
     /**

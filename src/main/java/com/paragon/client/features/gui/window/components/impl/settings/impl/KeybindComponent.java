@@ -47,7 +47,7 @@ public class KeybindComponent extends SettingComponent implements TextRenderer {
      */
     @Override public void render(int mouseX, int mouseY) {
         // Render background
-        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), GUI.buttonColour.getColour().getRGB());
+        RenderUtil.drawRect(getX(), getY(), getWidth(), getHeight(), isMouseOnButton(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
 
         // Render bar if listening
         if(isListening) RenderUtil.drawRect(getX(), getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());

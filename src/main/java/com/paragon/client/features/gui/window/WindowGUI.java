@@ -1,12 +1,16 @@
 package com.paragon.client.features.gui.window;
 
+import com.paragon.api.util.render.RenderUtil;
 import com.paragon.client.Paragon;
 import com.paragon.client.features.gui.window.components.Window;
 import com.paragon.client.features.module.Module;
+import com.paragon.client.features.module.impl.other.Colours;
+import com.paragon.client.features.module.impl.other.GUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -33,7 +37,14 @@ public class WindowGUI extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         // Make the background darker
-        drawDefaultBackground();
+        if (GUI.darkenBackground.isEnabled()) {
+            drawDefaultBackground();
+        }
+
+        // Render a cool gradient
+        if (GUI.gradient.isEnabled()) {
+            RenderUtil.drawGradientRect(0, height - 300, width, 300, 0, Colours.mainColour.getColour().getRGB());
+        }
 
         // Render window
         mainWindow.render(mouseX, mouseY);
@@ -71,11 +82,11 @@ public class WindowGUI extends GuiScreen {
     }
 
     /**
-     * Stops the game being paused when in the screen
+     * Changes whether the game is being paused when in the screen
      * @return Is the game paused whilst in the screen
      */
     public boolean doesGuiPauseGame() {
-        return false;
+        return GUI.pause.isEnabled();
     }
 
 }
