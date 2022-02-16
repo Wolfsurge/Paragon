@@ -419,8 +419,16 @@ public class AutoCrystal extends Module {
         }
 
         if (!antiWeakness.is("Off")) {
-            // Switch back
-            mc.getConnection().sendPacket(new CPacketHeldItemChange(antiWeaknessOldSlot));
+            // Weakness
+            PotionEffect weakness = mc.player.getActivePotionEffect(MobEffects.WEAKNESS);
+            // Strength
+            PotionEffect strength = mc.player.getActivePotionEffect(MobEffects.STRENGTH);
+
+            // Switch if we cannot break the crystal with our hands
+            if (weakness != null && (strength == null || strength.getAmplifier() < weakness.getAmplifier())) {
+                // Switch back
+                mc.getConnection().sendPacket(new CPacketHeldItemChange(antiWeaknessOldSlot));
+            }
         }
     }
 

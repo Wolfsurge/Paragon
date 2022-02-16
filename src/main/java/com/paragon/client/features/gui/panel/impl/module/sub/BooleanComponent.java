@@ -15,8 +15,10 @@ public class BooleanComponent extends SettingComponent {
 
     @Override
     public void renderSetting(int mouseX, int mouseY) {
+        // Background
         RenderUtil.drawRect(getModuleButton().getPanel().getX(), getModuleButton().getOffset() + getOffset(), getModuleButton().getPanel().getWidth(), getHeight(), isMouseOver(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
 
+        // Render setting name
         GL11.glPushMatrix();
         GL11.glScalef(0.5f, 0.5f, 0.5f);
         renderText(getSetting().getName(), (getModuleButton().getPanel().getX() + 4) * 2f, (getModuleButton().getOffset() + getOffset() + 4.5f) * 2f, ((BooleanSetting) getSetting()).isEnabled() ? Colours.mainColour.getColour().getRGB() : -1);

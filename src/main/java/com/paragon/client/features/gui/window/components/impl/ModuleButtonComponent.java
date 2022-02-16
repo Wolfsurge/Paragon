@@ -170,15 +170,15 @@ public class ModuleButtonComponent implements TextRenderer {
 
         int mouseWheel = Mouse.getDWheel();
         // Setting Scrolling
-        if(isMouseOverSettings(mouseX, mouseY)) {
-            if(mouseWheel < 0) {
+        if (isMouseOverSettings(mouseX, mouseY)) {
+            if (mouseWheel < 0) {
                 float settingEndY = (getParentCategory().getParentWindow().getY() + 35 + 263) - lastSettingComponent.getHeight();
                 if (lastSettingComponent.getY() > settingEndY)
-                    for(SettingComponent settingComponent : getSettingComponents())
+                    for (SettingComponent settingComponent : getSettingComponents())
                         settingComponent.setY(settingComponent.getY() - 10);
-            } else if(mouseWheel > 0) {
+            } else if (mouseWheel > 0) {
                 if (firstSettingComponent.getY() < getParentCategory().getY() + 20)
-                    for(SettingComponent settingComponent : getSettingComponents())
+                    for (SettingComponent settingComponent : getSettingComponents())
                         settingComponent.setY(settingComponent.getY() + 10);
             }
         }

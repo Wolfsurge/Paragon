@@ -24,7 +24,7 @@ public class KeybindComponent extends SettingComponent {
         String key = Keyboard.getKeyName(((KeybindSetting) getSetting()).getKeyCode());
         GL11.glPushMatrix();
         GL11.glScalef(0.5f, 0.5f, 0.5f);
-        renderText(getSetting().getName() + TextFormatting.GRAY + " " + key, (getModuleButton().getPanel().getX() + 4) * 2, (getModuleButton().getOffset() + getOffset() + 4.5f) * 2, -1);
+        renderText(getSetting().getName() + TextFormatting.GRAY + (isListening ?  "..." : " " + key), (getModuleButton().getPanel().getX() + 4) * 2, (getModuleButton().getOffset() + getOffset() + 4.5f) * 2, -1);
         GL11.glPopMatrix();
 
         super.renderSetting(mouseX, mouseY);

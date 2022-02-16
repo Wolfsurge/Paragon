@@ -1,16 +1,19 @@
 buildscript {
     repositories {
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven { url = 'http://files.minecraftforge.net/maven' }
         maven { url 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = modVersion
 group = modGroup
@@ -57,17 +60,27 @@ dependencies {
 
     compile "com.github.ZeroMemes:Alpine:1.5"
     compile group: 'net.jodah', name: 'typetools', version: '0.6.3'
-    compile('club.minnced:java-discord-rpc:2.0.2') { exclude module: 'jna' }
+    compile group: 'org.json', name: 'json', version: '20090211'
 }
 
 processResources {
     inputs.property 'version', project.version
+    inputs.property 'mcversion', project.minecraft.version
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+        classpath = sourceSets.main.compileClasspath
     }
 }
 
@@ -77,11 +90,14 @@ jar {
         'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
         'TweakOrder': 0,
         'FMLCorePlugin': mixinClass,
-        'ForceLoadAsMod': 'true'
+        'ForceLoadAsMod': 'true',
+        'FMLAT': 'paragon_at.cfg'
     )
 }
 
-sourceSets { main { output.resourcesDir = output.classesDir } }
+build.dependsOn(shadowJar)
+
+// sourceSets { main { output.resourcesDir = output.classesDir } }
 
 // Should you want to run the client through IDEA, comment the below line by putting '//' before it
 sourceSets { sourceSets -> main }

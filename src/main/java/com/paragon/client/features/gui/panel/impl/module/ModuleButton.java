@@ -42,6 +42,7 @@ public class ModuleButton implements TextRenderer {
 
         float settingOffset = 13;
 
+        // Add settings. Please make a PR if you want to make this look better.
         for (Setting setting : getModule().getSettings()) {
             if (setting instanceof BooleanSetting) {
                 settingComponents.add(new BooleanComponent(this, (BooleanSetting) setting, 13 + settingOffset, 12));
@@ -67,33 +68,42 @@ public class ModuleButton implements TextRenderer {
         RenderUtil.drawRect(getPanel().getX(), getOffset(), getPanel().getWidth(), getHeight(), isMouseOver(mouseX, mouseY) ? GUI.buttonColour.getColour().brighter().getRGB() : GUI.buttonColour.getColour().getRGB());
 
         GL11.glPushMatrix();
+        // Scale it
         GL11.glScalef(0.8f, 0.8f, 0.8f);
 
+        // Render the module's name
         renderText(getModule().getName(), (getPanel().getX() + 3) * 1.25f, (getOffset() + 3.5f) * 1.25f, getModule().isEnabled() ? Colours.mainColour.getColour().getRGB() : -1);
 
+        // Render some dots at the side if we have more settings than just the keybind
         if (module.getSettings().size() > 1) {
             renderText("...", (getPanel().getX() + getPanel().getWidth() - 10) * 1.25f, (getOffset() + 2f) * 1.25f, -1);
         }
 
         GL11.glPopMatrix();
 
+        // Draw a bar if the module is enabled
         if (getModule().isEnabled()) {
             RenderUtil.drawRect(getPanel().getX(), getOffset(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         }
 
+        // Refresh settings
         refreshSettingOffsets();
 
         if (expanded) {
+            // Render settings
             settingComponents.forEach(settingComponent -> {
                 settingComponent.renderSetting(mouseX, mouseY);
-            });
-
-            for (SettingComponent settingComponent : settingComponents) {
                 RenderUtil.drawRect(getPanel().getX(), getOffset() + settingComponent.getOffset(), 1, settingComponent.getHeight(), Colours.mainColour.getColour().getRGB());
-            }
+            });
         }
     }
 
+    /**
+     * Check if the mouse is over the module button
+     * @param mouseX The mouse's X
+     * @param mouseY The mouse's Y
+     * @return If the mouse is over the module button
+     */
     public boolean isMouseOver(int mouseX, int mouseY) {
         return GuiUtil.mouseOver(getPanel().getX(), getOffset(), getPanel().getX() + getPanel().getWidth(), getOffset() + getHeight(), mouseX, mouseY);
     }
@@ -101,15 +111,18 @@ public class ModuleButton implements TextRenderer {
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
             if (isMouseOver(mouseX, mouseY)) {
+                // Toggle the module
                 getModule().toggle();
             }
         } else if (mouseButton == 1) {
             if (isMouseOver(mouseX, mouseY)) {
+                // Expand the settings
                 expanded = !expanded;
             }
         }
 
         if (expanded) {
+            // Mouse clicked
             for (SettingComponent settingComponent : settingComponents) {
                 settingComponent.mouseClicked(mouseX, mouseY, mouseButton);
             }
@@ -117,11 +130,15 @@ public class ModuleButton implements TextRenderer {
     }
 
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
-
+        for (SettingComponent settingComponent : settingComponents) {
+            settingComponent.mouseReleased(mouseX, mouseY, mouseButton);
+        }
     }
 
     public void keyTyped(char keyTyped, int keyCode) {
-
+        for (SettingComponent settingComponent : settingComponents) {
+            settingComponent.keyTyped(keyTyped, keyCode);
+        }
     }
 
     public void refreshSettingOffsets() {

@@ -57,7 +57,7 @@ public class Panel implements TextRenderer {
 
         // Header
         RenderUtil.drawRect(getX(), getY(), getWidth(), 13, Colours.mainColour.getColour().getRGB());
-        renderText(getCategory().getName(), getX() + 5, getY() + 3, -1);
+        renderText(getCategory().getName(), getX() + 4, getY() + 2.5f, -1);
 
         if (open) {
             refreshOffsets();
@@ -139,6 +139,14 @@ public class Panel implements TextRenderer {
      */
     public float getY() {
         return y;
+    }
+
+    /**
+     * Sets the Y
+     * @param newY The new Y
+     */
+    public void setY(float newY) {
+        this.y = newY;
     }
 
     /**

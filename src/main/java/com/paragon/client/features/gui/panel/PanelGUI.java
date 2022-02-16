@@ -6,6 +6,7 @@ import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class PanelGUI extends GuiScreen {
         if (GUI.gradient.isEnabled()) {
             RenderUtil.drawGradientRect(0, height - 300, width, 300, 0, Colours.mainColour.getColour().getRGB());
         }
+
+        scrollPanels();
 
         // Render panels
         panels.forEach(panel -> {
@@ -83,6 +86,18 @@ public class PanelGUI extends GuiScreen {
         });
 
         super.keyTyped(typedChar, keyCode);
+    }
+
+    public void scrollPanels() {
+        int dWheel = Mouse.getDWheel();
+
+        for (Panel panel : panels) {
+            if (dWheel > 0) {
+                panel.setY(panel.getY() - 6.5f);
+            } else if (dWheel < 0) {
+                panel.setY(panel.getY() + 6.5f);
+            }
+        }
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.paragon.client.features.module.impl.movement;
 
 import com.paragon.api.event.events.network.PacketEvent;
-import com.paragon.asm.mixins.accessor.ISPacketEntityVelocity;
-import com.paragon.asm.mixins.accessor.ISPacketExplosion;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
@@ -15,25 +13,31 @@ import net.minecraft.network.play.server.SPacketExplosion;
 public class Velocity extends Module {
 
     private final BooleanSetting velocityPacket = new BooleanSetting("Velocity Packet", "Cancels or modifies the velocity packet", true);
-    private final NumberSetting vX = (NumberSetting) new NumberSetting("X", "The X modifier", 0, 0, 100, 1).setParentSetting(velocityPacket);
-    private final NumberSetting vY = (NumberSetting) new NumberSetting("Y", "The Y modifier", 0, 0, 100, 1).setParentSetting(velocityPacket);
-    private final NumberSetting vZ = (NumberSetting) new NumberSetting("Z", "The Z modifier", 0, 0, 100, 1).setParentSetting(velocityPacket);
-
     private final BooleanSetting explosions = new BooleanSetting("Explosions", "Cancels or modifies the explosion knockback", true);
-    private final NumberSetting eX = (NumberSetting) new NumberSetting("X", "The X modifier", 0, 0, 100, 1).setParentSetting(explosions);
-    private final NumberSetting eY = (NumberSetting) new NumberSetting("Y", "The Y modifier", 0, 0, 100, 1).setParentSetting(explosions);
-    private final NumberSetting eZ = (NumberSetting) new NumberSetting("Z", "The Z modifier", 0, 0, 100, 1).setParentSetting(explosions);
+
+    private final NumberSetting horizontal = new NumberSetting("Horizontal", "The horizontal modifier", 0, 0, 100, 1);
+    private final NumberSetting vertical = new NumberSetting("Vertical", "The vertical modifier", 0, 0, 100, 1);
 
     public Velocity() {
         super("Velocity", "Stops crystals and mobs from causing you knockback", Category.MOVEMENT);
-        this.addSettings(velocityPacket, explosions);
+        this.addSettings(velocityPacket, explosions, horizontal, vertical);
     }
 
     @EventHandler
     private final Listener<PacketEvent.PreReceive> preReceiveListener = new Listener<>(event -> {
        if (event.getPacket() instanceof SPacketEntityVelocity && velocityPacket.isEnabled()) {
            if (((SPacketEntityVelocity) event.getPacket()).getEntityID() == mc.player.getEntityId()) {
-               event.cancel();
+               if (horizontal.getValue() == 0 && vertical.getValue() == 0) {
+                   event.cancel();
+               } else {
+                   int motionX = ((SPacketEntityVelocity) event.getPacket()).motionX / 100;
+                   int motionY = ((SPacketEntityVelocity) event.getPacket()).motionY / 100;
+                   int motionZ = ((SPacketEntityVelocity) event.getPacket()).motionZ / 100;
+
+                   ((SPacketEntityVelocity) event.getPacket()).motionX = (int) (motionX * horizontal.getValue());
+                   ((SPacketEntityVelocity) event.getPacket()).motionY = (int) (motionY * vertical.getValue());
+                   ((SPacketEntityVelocity) event.getPacket()).motionZ = (int) (motionZ * horizontal.getValue());
+               }
            }
        }
 
@@ -42,4 +46,8 @@ public class Velocity extends Module {
        }
     });
 
+    @Override
+    public String getModuleInfo() {
+        return "H% " + vertical.getValue() + ", V% " + horizontal.getValue();
+    }
 }
