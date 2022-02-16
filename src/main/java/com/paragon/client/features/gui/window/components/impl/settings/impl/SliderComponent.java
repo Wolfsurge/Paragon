@@ -122,14 +122,16 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
      * @param mouseY The mouse's Y
      * @param mouseButton The button that is clicked
      */
-    @Override public void whenClicked(int mouseX, int mouseY, int mouseButton) {
+    @Override
+    public void whenClicked(int mouseX, int mouseY, int mouseButton) {
         if(isMouseOnButton(mouseX, mouseY) && mouseButton == 0)
             dragging = true;
         else if (mouseButton == 1)
             this.expanded = !this.expanded;
     }
 
-    @Override public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+    @Override
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         dragging = false;
     }
 
@@ -138,34 +140,10 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
     }
 
     /**
-     * Gets the parent window
-     * @return The parent window
-     */
-    public Window getParentWindow() {
-        return parentWindow;
-    }
-
-    /**
      * Sets the parent window
      * @param parentWindow The new parent window
      */
     public void setParentWindow(Window parentWindow) {
         this.parentWindow = parentWindow;
-    }
-
-    /**
-     * Gets the parent module button
-     * @return The parent module button
-     */
-    public ModuleButtonComponent getParentModuleButton() {
-        return parentModuleButton;
-    }
-
-    /**
-     * Sets the parent module button
-     * @param parentModuleButton The new parent module button
-     */
-    public void setParentModuleButton(ModuleButtonComponent parentModuleButton) {
-        this.parentModuleButton = parentModuleButton;
     }
 }
