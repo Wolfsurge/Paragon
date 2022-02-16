@@ -4,10 +4,10 @@ A 1.12.2 Anarchy Client
 Created by Wolfsurge and TeleTofu
 
 Todo for 1.0 Release:
-- AutoCrystal
+- AutoCrystal [WIP, functioning]
 - [Better] Offhand
 - NCP Bypassing Step
-- ESP [only needs outline now]
+- ESP [Done]
 - Tracers [Done]
 - AutoEZ
 - Panel GUI
