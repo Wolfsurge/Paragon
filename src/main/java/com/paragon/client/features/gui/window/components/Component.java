@@ -1,4 +1,4 @@
-package com.paragon.client.features.gui.components;
+package com.paragon.client.features.gui.window.components;
 
 public abstract class Component {
     public float offset;

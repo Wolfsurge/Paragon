@@ -1,8 +1,8 @@
 package com.paragon.api.util.render;
 
-import com.paragon.api.util.world.BlockUtil;
+import com.paragon.api.util.Wrapper;
+import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.world.EntityUtil;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
@@ -20,9 +19,7 @@ import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class RenderUtil {
-
-    private static Minecraft mc = Minecraft.getMinecraft();
+public class RenderUtil implements Wrapper {
 
     /**
      * Draws a rectangle at the given coordinates
@@ -228,6 +225,12 @@ public class RenderUtil {
         glDisable(GL_BLEND);
     }
 
+    /**
+     * Draws a bounding box around an AABB
+     * @param axisAlignedBB The AABB
+     * @param lineThickness The line width
+     * @param colour The colour of the outline
+     */
     public static void drawBoundingBox(AxisAlignedBB axisAlignedBB, float lineThickness, Color colour) {
         GL11.glBlendFunc(770, 771);
         GL11.glEnable(GL11.GL_BLEND);
@@ -241,4 +244,52 @@ public class RenderUtil {
         GL11.glDepthMask(true);
         GL11.glDisable(GL11.GL_BLEND);
     }
+
+    /**
+     * Draws a filled box around an AABB
+     * @param axisAlignedBB The AABB
+     * @param colour The colour of the outline
+     */
+    public static void drawFilledBox(AxisAlignedBB axisAlignedBB, Color colour) {
+        GL11.glBlendFunc(770, 771);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glLineWidth(1);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(false);
+        RenderGlobal.renderFilledBox(axisAlignedBB, colour.getRed() / 255f, colour.getGreen() / 255f, colour.getBlue() / 255f, colour.getAlpha() / 255f);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    public static void drawNametagText(String text, Vec3d location, int textColour) {
+        GlStateManager.pushMatrix();
+        // Translate
+        float scale = 0.02666667f;
+
+        GlStateManager.translate(location.x - mc.getRenderManager().viewerPosX, location.y - mc.getRenderManager().viewerPosY, location.z - mc.getRenderManager().viewerPosZ);
+        GlStateManager.glNormal3f(0, 1, 0);
+        GlStateManager.rotate(-mc.player.rotationYaw, 0, 1, 0);
+
+        // Rotate based on the view
+        GlStateManager.rotate(mc.player.rotationPitch, (mc.gameSettings.thirdPersonView == 2) ? -1 : 1, 0, 0);
+        GlStateManager.scale(-scale, -scale, scale);
+
+        GlStateManager.disableDepth();
+        GlStateManager.translate(-(getStringWidth(text) / 2f), 0, 0);
+
+        renderText(text, 0, 0, textColour);
+        GlStateManager.popMatrix();
+    }
+
+    static void renderText(String text, float x, float y, int colour) {
+        Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(text, x, y, colour);
+    }
+
+    static float getStringWidth(String text) {
+        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+    }
+
 }

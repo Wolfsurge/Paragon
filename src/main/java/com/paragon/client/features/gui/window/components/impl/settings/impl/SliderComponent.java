@@ -1,20 +1,19 @@
-package com.paragon.client.features.gui.components.impl.settings.impl;
+package com.paragon.client.features.gui.window.components.impl.settings.impl;
 
 import com.paragon.api.util.miscellaneous.MathUtils;
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
-import com.paragon.client.features.gui.components.Window;
-import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
-import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.gui.window.components.Window;
+import com.paragon.client.features.gui.window.components.impl.ModuleButtonComponent;
+import com.paragon.client.features.gui.window.components.impl.settings.SettingComponent;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
-import com.paragon.client.features.module.settings.impl.NumberSetting;
+import com.paragon.client.features.module.settings.Setting;
+import com.paragon.client.features.module.settings.impl.*;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * @author Wolfsurge
@@ -42,6 +41,31 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
         setY(y);
         setWidth(193);
         setHeight(20);
+
+        float offset = getY() + getHeight() + 1;
+
+        for (Setting setting : numberSetting.getSubsettings()) {
+            SettingComponent settingComponent = null;
+
+            if (setting instanceof BooleanSetting) {
+                settingComponent = new BooleanComponent(parentModuleButton, parentWindow, (BooleanSetting) setting, getX() + 5, offset);
+            } else if (setting instanceof NumberSetting) {
+                settingComponent = new SliderComponent(parentModuleButton, parentWindow, (NumberSetting) setting, getX() + 5, offset);
+            } else if (setting instanceof ModeSetting) {
+                settingComponent = new ModeComponent(parentModuleButton, parentWindow, (ModeSetting) setting, getX() + 5, offset);
+            } else if (setting instanceof ColourSetting) {
+                settingComponent = new ColourComponent(parentModuleButton, parentWindow, (ColourSetting) setting, getX() + 5, offset);
+            } else if (setting instanceof KeybindSetting) {
+                settingComponent = new KeybindComponent(parentModuleButton, parentWindow, (KeybindSetting) setting, getX() + 5, offset);
+            }
+
+            if (settingComponent == null) {
+                continue;
+            }
+
+            settingComponents.add(settingComponent);
+            offset += settingComponent.getHeight() + 1;
+        }
     }
 
     /**
@@ -61,6 +85,14 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
         GL11.glPopMatrix();
 
         RenderUtil.drawRect(getX(), getY() + getHeight() - 1, renderWidth, 1, Colours.mainColour.getColour().getRGB());
+
+        if (expanded) {
+            for (SettingComponent settingComponent : settingComponents) {
+                settingComponent.render(mouseX, mouseY);
+            }
+        }
+
+        refreshOffsets();
     }
 
     public void update(int mouseX, int mouseY) {
@@ -70,6 +102,9 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
         float max = numberSetting.getMax();
 
         renderWidth = (193) * (numberSetting.getValue() - min) / (max - min);
+
+        if (!Mouse.isButtonDown(0))
+            dragging = false;
 
         if (dragging) {
             if (diff == 0) {
@@ -88,8 +123,10 @@ public class SliderComponent extends SettingComponent implements TextRenderer {
      * @param mouseButton The button that is clicked
      */
     @Override public void whenClicked(int mouseX, int mouseY, int mouseButton) {
-        if(isMouseOnButton(mouseX, mouseY))
+        if(isMouseOnButton(mouseX, mouseY) && mouseButton == 0)
             dragging = true;
+        else if (mouseButton == 1)
+            this.expanded = !this.expanded;
     }
 
     @Override public void mouseReleased(int mouseX, int mouseY, int mouseButton) {

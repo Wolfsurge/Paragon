@@ -7,6 +7,7 @@ import com.paragon.client.features.module.impl.combat.AutoTotem;
 import com.paragon.client.features.module.impl.hud.HUD;
 import com.paragon.client.features.module.impl.movement.Flight;
 import com.paragon.client.features.module.impl.movement.Step;
+import com.paragon.client.features.module.impl.movement.Velocity;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.impl.render.ESP;
@@ -34,6 +35,7 @@ public class ModuleManager {
 
         modules.add(new Step());
         modules.add(new Flight());
+        modules.add(new Velocity());
 
         modules.add(new ESP());
         modules.add(new Tracers());

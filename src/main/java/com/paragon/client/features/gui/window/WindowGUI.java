@@ -1,13 +1,12 @@
-package com.paragon.client.features.gui;
+package com.paragon.client.features.gui.window;
 
-import com.paragon.api.util.render.DisplayUtil;
 import com.paragon.client.Paragon;
-import com.paragon.client.features.gui.components.Window;
+import com.paragon.client.features.gui.window.components.Window;
+import com.paragon.client.features.module.Module;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -23,6 +22,10 @@ public class WindowGUI extends GuiScreen {
         ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
         // Create window
         mainWindow = new Window("Paragon " + Paragon.VERSION, scaledResolution.getScaledWidth() / 2f - 200, scaledResolution.getScaledHeight() / 2f - 150, 400, 300);
+
+        for(Module m : Paragon.moduleManager.modules) {
+            Paragon.storageManager.loadModuleConfiguration(m);
+        }
     }
 
     @Override
@@ -34,6 +37,15 @@ public class WindowGUI extends GuiScreen {
 
         // Render window
         mainWindow.render(mouseX, mouseY);
+    }
+
+    /**
+     * Called when the GUI is closed
+     */
+    @Override
+    public void onGuiClosed() {
+        for(Module module : Paragon.moduleManager.modules)
+            Paragon.storageManager.saveModuleConfiguration(module);
     }
 
     @Override

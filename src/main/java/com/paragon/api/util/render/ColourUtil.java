@@ -21,7 +21,7 @@ public class ColourUtil {
     }
 
     /**
-     * Sets the GL colour based on an hex integer
+     * Sets the GL colour based on a hex integer
      * @param colorHex The integer of the hex value
      */
     public static void setColor(int colorHex) {
@@ -30,6 +30,19 @@ public class ColourUtil {
         float green = (colorHex >> 8 & 0xFF) / 255.0F;
         float blue = (colorHex & 0xFF) / 255.0F;
         GL11.glColor4f(red, green, blue, (alpha == 0.0F) ? 1.0F : alpha);
+    }
+
+    /**
+     * Integrates alpha into a colour
+     * @param colour The original colour
+     * @param alpha The new alpha
+     * @return The new colour
+     */
+    public static Color integrateAlpha(Color colour, float alpha) {
+        float red = colour.getRed() / 255f;
+        float green = colour.getGreen() / 255f;
+        float blue = colour.getBlue() / 255f;
+        return new Color(red, green, blue, alpha);
     }
 
 }

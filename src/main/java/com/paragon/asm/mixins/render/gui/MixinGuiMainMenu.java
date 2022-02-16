@@ -1,4 +1,4 @@
-package com.paragon.asm.mixins;
+package com.paragon.asm.mixins.render.gui;
 
 import com.paragon.client.Paragon;
 import net.minecraft.client.Minecraft;

@@ -5,7 +5,13 @@
   "refmap": "mixins.paragon.refmap.json",
   "minVersion": "0.7.4",
   "mixins": [
-    "MixinGuiMainMenu",
-    "MixinRenderLivingBase"
+    "accessor.ICPacketUseEntity",
+    "accessor.ISPacketEntityVelocity",
+    "accessor.ISPacketExplosion",
+
+    "network.MixinNetworkManager",
+
+    "render.gui.MixinGuiMainMenu",
+    "render.entity.MixinRenderLivingBase"
   ]
 }

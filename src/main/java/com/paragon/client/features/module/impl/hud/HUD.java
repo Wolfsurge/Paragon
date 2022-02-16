@@ -24,12 +24,11 @@ public class HUD extends Module implements TextRenderer {
     private final BooleanSetting watermark = new BooleanSetting("Watermark", "Draws the client's name in the top left", true);
 
     private final BooleanSetting arrayList = new BooleanSetting("Array List", "Render the enabled modules on screen", true);
-    private final ModeSetting arrayListColour = new ModeSetting("Array List Colour", "What colour to render the modules in", "Rainbow Wave", new String[]{"Rainbow Wave", "Rainbow", "Static"});
+    private final ModeSetting arrayListColour = (ModeSetting) new ModeSetting("Array List Colour", "What colour to render the modules in", "Rainbow Wave", new String[]{"Rainbow Wave", "Rainbow", "Static"}).setParentSetting(arrayList);
 
     public HUD() {
         super("HUD", "Render the client's HUD on screen", Category.OTHER);
-        this.addSettings(watermark, arrayList, arrayListColour);
-        this.toggle();
+        this.addSettings(watermark, arrayList);
     }
 
     @EventHandler

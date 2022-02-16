@@ -48,6 +48,9 @@ public class Module {
         this.category = category;
 
         addSettings(keyCode);
+
+        // Load configuration
+        Paragon.storageManager.loadModuleConfiguration(this);
     }
 
     /**
@@ -64,6 +67,9 @@ public class Module {
         this.keyCode.setKeyCode(keyBind);
 
         addSettings(keyCode);
+
+        // Load configuration
+        Paragon.storageManager.loadModuleConfiguration(this);
     }
 
     /**
@@ -170,6 +176,11 @@ public class Module {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+
+        if(enabled)
+            enable();
+        else
+            disable();
     }
 
     /**
@@ -194,5 +205,13 @@ public class Module {
      */
     public String getModuleInfo() {
         return "";
+    }
+
+    /**
+     * Checks if the player or the world is null
+     * @return If the player or the world is null
+     */
+    public boolean nullCheck() {
+        return mc.player == null || mc.world == null;
     }
 }

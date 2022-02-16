@@ -27,18 +27,18 @@ public class ESP extends Module {
 
     /* Entity settings */
     private final BooleanSetting passive = new BooleanSetting("Passives", "Highlight passive entities", true);
-    private final ColourSetting passiveColour = new ColourSetting("Passive Colour", "The colour to highlight passive entities in", Color.GREEN);
+    private final ColourSetting passiveColour = (ColourSetting) new ColourSetting("Passive Colour", "The colour to highlight passive entities in", Color.GREEN).setParentSetting(passive);
 
     private final BooleanSetting mobs = new BooleanSetting("Mobs", "Highlight mobs", true);
-    private final ColourSetting mobColour = new ColourSetting("Mob Colour", "The colour to highlight mobs in", Color.RED);
+    private final ColourSetting mobColour = (ColourSetting) new ColourSetting("Mob Colour", "The colour to highlight mobs in", Color.RED).setParentSetting(mobs);
 
     private final BooleanSetting players = new BooleanSetting("Players", "Highlight player entities", true);
-    private final ColourSetting playerColour = new ColourSetting("Player Colour", "The colour to highlight player entities in", new Color(255, 255, 255));
+    private final ColourSetting playerColour = (ColourSetting) new ColourSetting("Player Colour", "The colour to highlight player entities in", new Color(255, 255, 255)).setParentSetting(players);
 
     private final BooleanSetting items = new BooleanSetting("Items", "Highlight items", true);
 
     private final BooleanSetting crystals = new BooleanSetting("Crystals", "Highlight end crystals", true);
-    private final ColourSetting crystalColour = new ColourSetting("Crystal Colour", "The colour to highlight end crystals in", Color.GREEN);
+    private final ColourSetting crystalColour = (ColourSetting) new ColourSetting("Crystal Colour", "The colour to highlight end crystals in", Color.GREEN).setParentSetting(crystals);
 
     /* Mode and line width */
     private final ModeSetting mode = new ModeSetting("Mode", "How to render the entities", "Outline", new String[]{"Outline", "Glow", "Box"});
@@ -46,11 +46,13 @@ public class ESP extends Module {
 
     public ESP() {
         super("ESP", "Highlights entities in the world", Category.RENDER);
-        this.addSettings(passive, passiveColour, mobs, mobColour, players, playerColour, items, crystals, crystalColour, mode, lineWidth);
+        this.addSettings(passive, mobs, players, items, crystals, mode, lineWidth);
     }
 
     @Override
     public void onDisable() {
+        if(nullCheck()) return;
+
         for(Entity e : mc.world.loadedEntityList) {
             e.setGlowing(false);
         }

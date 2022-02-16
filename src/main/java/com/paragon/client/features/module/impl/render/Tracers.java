@@ -18,22 +18,22 @@ import java.awt.*;
 public class Tracers extends Module {
 
     private final BooleanSetting passive = new BooleanSetting("Passives", "Draws lines to passive entities", true);
-    private final ColourSetting passiveColour = new ColourSetting("Passive Colour", "The colour to render the passive tracers in", new Color(0, 255, 0, 180));
+    private final ColourSetting passiveColour = (ColourSetting) new ColourSetting("Passive Colour", "The colour to render the passive tracers in", new Color(0, 255, 0, 180)).setParentSetting(passive);
 
     private final BooleanSetting mobs = new BooleanSetting("Mobs", "Draws lines to monsters", true);
-    private final ColourSetting mobColour = new ColourSetting("Mob Colour", "The colour to render the mob tracers in", new Color(255, 0, 0, 180));
+    private final ColourSetting mobColour = (ColourSetting) new ColourSetting("Mob Colour", "The colour to render the mob tracers in", new Color(255, 0, 0, 180)).setParentSetting(mobs);
 
     private final BooleanSetting players = new BooleanSetting("Players", "Draws lines to players", true);
-    private final ColourSetting playerColour = new ColourSetting("Player Colour", "The colour to render the player tracers in", new Color(255, 255, 255, 180));
+    private final ColourSetting playerColour = (ColourSetting) new ColourSetting("Player Colour", "The colour to render the player tracers in", new Color(255, 255, 255, 180)).setParentSetting(players);
 
     private final BooleanSetting crystals = new BooleanSetting("Crystals", "Draws lines to ender crystals", true);
-    private final ColourSetting crystalColour = new ColourSetting("Crystal Colour", "The colour to render the ender crystal tracers in", new Color(200, 0, 200, 180));
+    private final ColourSetting crystalColour = (ColourSetting) new ColourSetting("Crystal Colour", "The colour to render the ender crystal tracers in", new Color(200, 0, 200, 180)).setParentSetting(crystals);
 
     private final NumberSetting lineWidth = new NumberSetting("Line Width", "How thick to render the lines", 0.5f, 0.1f, 2f, 0.1f);
 
     public Tracers() {
         super("Tracers", "Draws lines to entities in the world", Category.RENDER);
-        this.addSettings(passive, passiveColour, mobs, mobColour, players, playerColour, crystals, crystalColour, lineWidth);
+        this.addSettings(passive, mobs, players, crystals, lineWidth);
     }
 
     @SubscribeEvent

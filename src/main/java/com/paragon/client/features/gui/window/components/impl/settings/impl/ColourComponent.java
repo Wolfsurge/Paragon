@@ -1,13 +1,12 @@
-package com.paragon.client.features.gui.components.impl.settings.impl;
+package com.paragon.client.features.gui.window.components.impl.settings.impl;
 
 import com.paragon.api.util.miscellaneous.TextRenderer;
+import com.paragon.api.util.render.ColourUtil;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
-import com.paragon.client.Paragon;
-import com.paragon.client.features.gui.WindowGUI;
-import com.paragon.client.features.gui.components.Window;
-import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
-import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.gui.window.components.Window;
+import com.paragon.client.features.gui.window.components.impl.ModuleButtonComponent;
+import com.paragon.client.features.gui.window.components.impl.settings.SettingComponent;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
@@ -90,14 +89,6 @@ public class ColourComponent extends SettingComponent implements TextRenderer {
     }
 
     /**
-     * Gets the parent window
-     * @return The parent window
-     */
-    public Window getParentWindow() {
-        return parentWindow;
-    }
-
-    /**
      * Sets the parent window
      * @param parentWindow The new parent window
      */
@@ -105,7 +96,7 @@ public class ColourComponent extends SettingComponent implements TextRenderer {
         this.parentWindow = parentWindow;
     }
 
-    // The rest of the code is from Wurst +3
+    // The rest of the code is from Wurst +3, but edited
 
     public void drawPicker(float pickerX, float pickerY, float hueSliderX, float hueSliderY, float alphaSliderX, float alphaSliderY, int mouseX, int mouseY) {
         float[] color = new float[] {
@@ -130,6 +121,12 @@ public class ColourComponent extends SettingComponent implements TextRenderer {
                 pickingHue = true;
             } else if (Mouse.isButtonDown(0) && GuiUtil.mouseOver(alphaSliderX, alphaSliderY, alphaSliderX + alphaSliderWidth, alphaSliderY + alphaSliderHeight, mouseX, mouseY))
                 pickingAlpha = true;
+        }
+
+        if (!Mouse.isButtonDown(0)) {
+            pickingColor = false;
+            pickingHue = false;
+            pickingAlpha = false;
         }
 
         if (pickingHue) {
@@ -167,18 +164,11 @@ public class ColourComponent extends SettingComponent implements TextRenderer {
 
         RenderUtil.drawRect(cursorX - 2, cursorY - 2, 4, 4, Colours.mainColour.getColour().getRGB());
 
-        Color finalColor = alphaIntegrate(new Color(Color.HSBtoRGB(color[0], color[1], color[2])), color[3]);
+        Color finalColor = ColourUtil.integrateAlpha(new Color(Color.HSBtoRGB(color[0], color[1], color[2])), color[3]);
 
         drawAlphaSlider(alphaSliderX, alphaSliderY, alphaSliderWidth, alphaSliderHeight, finalColor.getRed() / 255f, finalColor.getGreen() / 255f, finalColor.getBlue() / 255f, color[3]);
 
         this.colourSetting.setColour(finalColor);
-    }
-
-    public static Color alphaIntegrate(Color color, float alpha) {
-        float red = (float) color.getRed() / 255;
-        float green = (float) color.getGreen() / 255;
-        float blue = (float) color.getBlue() / 255;
-        return new Color(red, green, blue, alpha);
     }
 
     public void drawHueSlider(float x, float y, float width, float height, float hue) {

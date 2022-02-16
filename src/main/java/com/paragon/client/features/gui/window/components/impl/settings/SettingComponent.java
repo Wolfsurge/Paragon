@@ -1,19 +1,51 @@
-package com.paragon.client.features.gui.components.impl.settings;
+package com.paragon.client.features.gui.window.components.impl.settings;
 
 import com.paragon.api.util.render.GuiUtil;
+import com.paragon.client.features.gui.window.components.impl.settings.impl.*;
 import com.paragon.client.features.module.settings.Setting;
+import com.paragon.client.features.module.settings.impl.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SettingComponent {
     // Setting
     private Setting setting;
 
     // X, Y, Width, and Height
-    private float x, y, width, height;
+    private float x, y, width, height, settingHeight = 0;
+
+    // List of subsetting components
+    public final List<SettingComponent> settingComponents = new ArrayList<>();
+
+    // Is the component expanded
+    public boolean expanded = false;
 
     public void render(int mouseX, int mouseY) {}
     public void whenClicked(int mouseX, int mouseY, int mouseButton) {}
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {}
     public void keyTyped(char typedChar, int keyCode) {}
+
+    // Get the extra height
+    public float getSettingHeight() {
+        float settingHeight = 0f;
+
+        for (SettingComponent settingComponent : settingComponents) {
+            settingHeight += settingComponent.getHeight() + 1;
+        }
+
+        return expanded ? settingHeight : 0;
+    }
+
+    // Refresh subsetting offsets
+    public void refreshOffsets() {
+        float offset = getY() + getHeight() + 1;
+
+        for (SettingComponent settingComponent : settingComponents) {
+            settingComponent.setY(offset);
+            offset += settingComponent.getHeight() + 1;
+        }
+    }
 
     /**
      * Returns whether the mouse is over the button

@@ -17,6 +17,8 @@ public class Flight extends Module {
 
     @Override
     public void onDisable() {
+        if(nullCheck()) return;
+
         mc.player.capabilities.isFlying = false;
     }
 

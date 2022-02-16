@@ -1,12 +1,11 @@
-package com.paragon.client.features.gui.components.impl.settings.impl;
+package com.paragon.client.features.gui.window.components.impl.settings.impl;
 
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
-import com.paragon.client.features.gui.WindowGUI;
-import com.paragon.client.features.gui.components.Window;
-import com.paragon.client.features.gui.components.impl.ModuleButtonComponent;
-import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
+import com.paragon.client.features.gui.window.components.Window;
+import com.paragon.client.features.gui.window.components.impl.ModuleButtonComponent;
+import com.paragon.client.features.gui.window.components.impl.settings.SettingComponent;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.KeybindSetting;

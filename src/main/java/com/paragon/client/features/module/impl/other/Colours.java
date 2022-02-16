@@ -1,13 +1,9 @@
 package com.paragon.client.features.module.impl.other;
 
-import com.paragon.api.event.events.UpdateEvent;
 import com.paragon.client.Paragon;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
-
 import java.awt.*;
 
 public class Colours extends Module {

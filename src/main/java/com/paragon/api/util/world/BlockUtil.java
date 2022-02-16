@@ -2,6 +2,7 @@ package com.paragon.api.util.world;
 
 import com.paragon.api.util.miscellaneous.MathUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

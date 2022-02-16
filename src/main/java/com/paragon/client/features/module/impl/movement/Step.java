@@ -24,6 +24,8 @@ public class Step extends Module {
 
     @Override
     public void onDisable() {
+        if(nullCheck()) return;
+
         if(mode.is("Vanilla"))
             mc.player.stepHeight = 0.5f;
     }

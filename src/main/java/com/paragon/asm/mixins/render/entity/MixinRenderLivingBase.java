@@ -1,4 +1,4 @@
-package com.paragon.asm.mixins;
+package com.paragon.asm.mixins.render.entity;
 
 import com.paragon.api.event.events.RenderEntityEvent;
 import com.paragon.client.Paragon;

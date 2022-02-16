@@ -1,12 +1,10 @@
-package com.paragon.client.features.gui.components.impl;
+package com.paragon.client.features.gui.window.components.impl;
 
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
-import com.paragon.client.Paragon;
-import com.paragon.client.features.gui.WindowGUI;
-import com.paragon.client.features.gui.components.impl.settings.SettingComponent;
-import com.paragon.client.features.gui.components.impl.settings.impl.*;
+import com.paragon.client.features.gui.window.components.impl.settings.SettingComponent;
+import com.paragon.client.features.gui.window.components.impl.settings.impl.*;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
@@ -14,7 +12,6 @@ import com.paragon.client.features.module.settings.Setting;
 import com.paragon.client.features.module.settings.impl.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import scala.xml.PrettyPrinter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +107,9 @@ public class ModuleButtonComponent implements TextRenderer {
         } else if(getParentCategory().getSelectedModule() == getModule()) {
             RenderUtil.drawRect(getX() + getWidth() - 1, getY(), 1, getHeight(), Colours.mainColour.getColour().getRGB());
         }
+
+        // Refresh setting offsets
+        refreshOffsets();
     }
 
     /**
@@ -131,10 +131,17 @@ public class ModuleButtonComponent implements TextRenderer {
             }
         } else if(isMouseOverSettings(mouseX, mouseY) && getParentCategory().getSelectedModule() == getModule()) {
             for(SettingComponent settingComponent : settingComponents)
-                if(settingComponent.isMouseOnButton(mouseX, mouseY)) settingComponent.whenClicked(mouseX, mouseY, mouseClicked);
+                if(settingComponent.isMouseOnButton(mouseX, mouseY))
+                    settingComponent.whenClicked(mouseX, mouseY, mouseClicked);
+                else if (settingComponent.expanded) {
+                    for (SettingComponent settingComponent1 : settingComponent.settingComponents) {
+                        if (settingComponent1.isMouseOnButton(mouseX, mouseY)) {
+                            settingComponent1.whenClicked(mouseX, mouseY, mouseClicked);
+                        }
+                    }
+                }
         }
     }
-
 
     /**
      * Triggered when the mouse is released
@@ -174,6 +181,15 @@ public class ModuleButtonComponent implements TextRenderer {
                     for(SettingComponent settingComponent : getSettingComponents())
                         settingComponent.setY(settingComponent.getY() + 10);
             }
+        }
+    }
+
+    public void refreshOffsets() {
+        float offset = settingComponents.get(0).getY();
+
+        for (SettingComponent settingComponent : getSettingComponents()) {
+            settingComponent.setY(offset);
+            offset += settingComponent.getHeight() + settingComponent.getSettingHeight() + 1;
         }
     }
 

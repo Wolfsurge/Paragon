@@ -1,17 +1,15 @@
-package com.paragon.client.features.gui.components.impl;
+package com.paragon.client.features.gui.window.components.impl;
 
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
 import com.paragon.client.Paragon;
-import com.paragon.client.features.gui.WindowGUI;
-import com.paragon.client.features.gui.components.Window;
+import com.paragon.client.features.gui.window.components.Window;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

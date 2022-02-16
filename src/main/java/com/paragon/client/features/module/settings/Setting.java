@@ -66,7 +66,11 @@ public class Setting {
      * Sets the parent setting
      * @param parentSetting The new parent setting
      */
-    public void setParentSetting(Setting parentSetting) {
+    public Setting setParentSetting(Setting parentSetting) {
         this.parentSetting = parentSetting;
+
+        parentSetting.getSubsettings().add(this);
+
+        return this;
     }
 }
