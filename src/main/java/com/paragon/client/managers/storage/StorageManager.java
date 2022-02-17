@@ -1,12 +1,19 @@
 package com.paragon.client.managers.storage;
 
+import com.paragon.client.Paragon;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.Setting;
 import com.paragon.client.features.module.settings.impl.*;
+import com.paragon.client.managers.social.Player;
+import com.paragon.client.managers.social.Relationship;
+import jdk.nashorn.internal.parser.JSONParser;
+import net.minecraftforge.event.world.NoteBlockEvent;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import scala.xml.PrettyPrinter;
 
 import java.awt.*;
 import java.io.*;
@@ -20,6 +27,7 @@ import java.util.Map;
 public class StorageManager {
 
     public File modulesFolder = new File("paragon/modules/");
+    public File friendsFolder = new File("paragon/friends");
 
     /**
      * Saves a module config to a file
@@ -68,7 +76,7 @@ public class StorageManager {
                 }
 
                 fileWriter.write(jsonObject.toString(4));
-            } catch (IOException | JSONException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -118,12 +126,57 @@ public class StorageManager {
         }
     }
 
-    public static JSONObject loadExistingConfiguration(File file) throws IOException, JSONException {
-        return new JSONObject(FileUtils.readFileToString(file, Charsets.UTF_8));
+    public void saveSocial() {
+        if(!friendsFolder.exists()) friendsFolder.mkdirs();
+
+        try {
+            File file = new File("paragon/friends/friends.json");
+            JSONObject jsonObject = new JSONObject();
+            file.createNewFile();
+            FileWriter fileWriter = new FileWriter(file);
+
+            try {
+                JSONArray array = new JSONArray();
+
+                for (Player player : Paragon.socialManager.players) {
+                    array.put(player.getName() + ":" + player.getRelationship().name());
+                }
+
+                jsonObject.putOpt("acquaintances", array);
+
+                fileWriter.write(jsonObject.toString(4));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static Configuration newConfiguration(File file) {
-        return new Configuration(file);
+    public void loadSocial() {
+        if(!friendsFolder.exists()) friendsFolder.mkdirs();
+
+        try {
+            JSONObject jsonObject = loadExistingConfiguration(new File("paragon/friends/friends.json"));
+
+            JSONArray acquaintances = jsonObject.getJSONArray("acquaintances");
+
+            for (int i = 0; i < acquaintances.length(); i++) {
+                String[] info = String.valueOf(acquaintances.get(i)).split(":");
+                Player player = new Player(info[0], Relationship.valueOf(info[1]));
+                Paragon.socialManager.addPlayer(player);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static JSONObject loadExistingConfiguration(File file) throws IOException, JSONException {
+        return new JSONObject(FileUtils.readFileToString(file, Charsets.UTF_8));
     }
 
 }

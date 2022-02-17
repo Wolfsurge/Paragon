@@ -1,12 +1,15 @@
 package com.paragon.client.features.gui.panel;
 
 import com.paragon.api.util.render.RenderUtil;
+import com.paragon.client.Paragon;
 import com.paragon.client.features.gui.panel.impl.Panel;
 import com.paragon.client.features.module.Category;
+import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
+import scala.xml.PrettyPrinter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,6 +55,8 @@ public class PanelGUI extends GuiScreen {
             panel.renderPanel(mouseX, mouseY);
         });
 
+        Paragon.taskbar.drawTaskbar(mouseX, mouseY);
+
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -86,6 +91,15 @@ public class PanelGUI extends GuiScreen {
         });
 
         super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        for (Module module : Paragon.moduleManager.modules) {
+            Paragon.storageManager.saveModuleConfiguration(module);
+        }
+
+        Paragon.storageManager.saveSocial();
     }
 
     public void scrollPanels() {

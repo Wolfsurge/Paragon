@@ -36,10 +36,12 @@ public class ColourComponent extends SettingComponent {
 
         // Draw picker if expanded
         if (open) {
+            GL11.glPushMatrix();
             drawPicker(getModuleButton().getPanel().getX() + 4, getModuleButton().getOffset() + getOffset() + 12,
                     getModuleButton().getPanel().getX() + 4, getModuleButton().getOffset() + getOffset() + 12 + 78,
                     getModuleButton().getPanel().getX() + 4, getModuleButton().getOffset() + getOffset() + 12 + 78 + 13,
                     mouseX, mouseY);
+            GL11.glPopMatrix();
         }
 
         super.renderSetting(mouseX, mouseY);

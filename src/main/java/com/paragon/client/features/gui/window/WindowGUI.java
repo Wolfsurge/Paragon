@@ -64,6 +64,8 @@ public class WindowGUI extends GuiScreen {
 
         // Render window
         mainWindow.render(mouseX, mouseY);
+
+        Paragon.taskbar.drawTaskbar(mouseX, mouseY);
     }
 
     /**

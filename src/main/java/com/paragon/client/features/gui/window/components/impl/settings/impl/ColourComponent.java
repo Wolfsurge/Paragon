@@ -63,7 +63,9 @@ public class ColourComponent extends SettingComponent implements TextRenderer {
 
         RenderUtil.drawRect(getX() + getWidth() - 26, getY() + 1, 20, 20, colourSetting.getColour().getRGB());
 
+        GL11.glPushMatrix();
         drawPicker(getX() + 3, getY() + 20, getX() + 110, getY() + 25, getX() + 110, getY() + 38, mouseX, mouseY);
+        GL11.glPopMatrix();
     }
 
     /**

@@ -56,7 +56,7 @@ public class HUD extends Module implements TextRenderer {
             float y = scaledResolution.getScaledHeight() - 11;
 
             if (fps.isEnabled()) {
-                renderText("FPS " + TextFormatting.GRAY + Minecraft.getDebugFPS(), 1, y, -1);
+                renderText("FPS " + TextFormatting.GRAY + Minecraft.getDebugFPS(), 2, y, Colours.mainColour.getColour().getRGB());
                 y -= 11;
             }
         }

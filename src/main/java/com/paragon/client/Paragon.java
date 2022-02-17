@@ -1,9 +1,11 @@
 package com.paragon.client;
 
 import com.paragon.client.features.gui.panel.PanelGUI;
+import com.paragon.client.features.gui.taskbar.Taskbar;
 import com.paragon.client.features.gui.window.WindowGUI;
 import com.paragon.client.managers.ModuleManager;
 import com.paragon.client.managers.RotationManager;
+import com.paragon.client.managers.social.SocialManager;
 import com.paragon.client.managers.storage.StorageManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -22,8 +24,9 @@ public class Paragon
 
     public static ModuleManager moduleManager;
     public static StorageManager storageManager;
-
     public static RotationManager rotationManager;
+    public static Taskbar taskbar;
+    public static SocialManager socialManager;
 
     // GUIs
     public static WindowGUI windowGUI;
@@ -42,6 +45,10 @@ public class Paragon
         storageManager = new StorageManager();
         moduleManager = new ModuleManager();
         rotationManager = new RotationManager();
+        taskbar = new Taskbar();
+
+        socialManager = new SocialManager();
+        storageManager.loadSocial();
 
         windowGUI = new WindowGUI();
         panelGUI = new PanelGUI();
