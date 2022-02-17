@@ -5,7 +5,6 @@ import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.impl.combat.AutoCrystal;
 import com.paragon.client.features.module.impl.combat.AutoTotem;
 import com.paragon.client.features.module.impl.hud.HUD;
-import com.paragon.client.features.module.impl.misc.FakePlayer;
 import com.paragon.client.features.module.impl.movement.Flight;
 import com.paragon.client.features.module.impl.movement.Step;
 import com.paragon.client.features.module.impl.movement.Velocity;
@@ -40,8 +39,6 @@ public class ModuleManager {
 
         modules.add(new ESP());
         modules.add(new Tracers());
-
-        modules.add(new FakePlayer());
 
         modules.add(new HUD());
         modules.add(new GUI());
