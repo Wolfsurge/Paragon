@@ -1,7 +1,6 @@
 package com.paragon.client.features.module.impl.combat;
 
-import com.paragon.api.event.events.UpdateEvent;
-import com.paragon.api.event.events.network.PacketEvent;
+import com.paragon.api.events.network.PacketEvent;
 import com.paragon.api.util.player.InventoryUtil;
 import com.paragon.api.util.player.RotationUtil;
 import com.paragon.api.util.render.ColourUtil;
@@ -18,8 +17,6 @@ import com.paragon.client.features.module.settings.impl.ModeSetting;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
 import com.paragon.client.managers.rotation.Rotation;
 import com.paragon.client.managers.rotation.RotationType;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -33,7 +30,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSpawnObject;
@@ -49,6 +45,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.util.*;
@@ -125,12 +122,18 @@ public class AutoCrystal extends Module {
         resetVariables();
     }
 
-    @EventHandler
-    private final Listener<UpdateEvent> updateEventListener = new Listener<>(event -> {
-        if(updateEvent.is("Client") && event.getUpdateType() != UpdateEvent.Type.Client || updateEvent.is("Server") && event.getUpdateType() != UpdateEvent.Type.Server) return;
+    @SubscribeEvent
+    public void onTick(TickEvent event) {
+        if (nullCheck()) {
+            return;
+        }
+
+        if(updateEvent.is("Client") && !(event instanceof TickEvent.ClientTickEvent) || updateEvent.is("Server") && !(event instanceof TickEvent.ServerTickEvent)) {
+            return;
+        }
 
         doAutoCrystal();
-    });
+    }
 
     public void doAutoCrystal() {
         if(!setTarget()) return;
@@ -197,8 +200,8 @@ public class AutoCrystal extends Module {
         }
     }
 
-    @EventHandler
-    private final Listener<PacketEvent.PreReceive> preReceiveListener = new Listener<>(event -> {
+    @SubscribeEvent
+    public void onPacketPreReceive(PacketEvent.PreReceive event) {
         // Check that we want to instant break, and we have a target
         if (instant.isEnabled() && currentTarget != null) {
             if (event.getPacket() instanceof SPacketSpawnObject) {
@@ -225,7 +228,7 @@ public class AutoCrystal extends Module {
                 }
             }
         }
-    });
+    }
 
     /* Place Utils */
 

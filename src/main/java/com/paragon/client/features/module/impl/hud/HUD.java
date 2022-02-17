@@ -1,6 +1,5 @@
 package com.paragon.client.features.module.impl.hud;
 
-import com.paragon.api.event.events.RenderGUIEvent;
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.ColourUtil;
 import com.paragon.client.Paragon;
@@ -9,13 +8,13 @@ import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,20 +25,41 @@ public class HUD extends Module implements TextRenderer {
     private final BooleanSetting arrayList = new BooleanSetting("Array List", "Render the enabled modules on screen", true);
     private final ModeSetting arrayListColour = (ModeSetting) new ModeSetting("Array List Colour", "What colour to render the modules in", "Rainbow Wave", new String[]{"Rainbow Wave", "Rainbow", "Static"}).setParentSetting(arrayList);
 
+    private final BooleanSetting info = new BooleanSetting("Info", "Render useful information in the bottom left", true);
+    private final BooleanSetting fps = (BooleanSetting) new BooleanSetting("FPS", "Render your FPS", true).setParentSetting(info);
+
     public HUD() {
         super("HUD", "Render the client's HUD on screen", Category.OTHER);
-        this.addSettings(watermark, arrayList);
+        this.addSettings(watermark, arrayList, info);
     }
 
-    @EventHandler
-    private final Listener<RenderGUIEvent> renderGUIEventListener = new Listener<>(event -> {
+    @SubscribeEvent
+    public void onRenderGUI(RenderGameOverlayEvent event) {
+        if (event.getType() != RenderGameOverlayEvent.ElementType.TEXT) {
+            return;
+        }
+
         drawWatermark();
+        drawInfo();
         drawArrayList();
-    });
+    }
 
     public void drawWatermark() {
         if(watermark.isEnabled())
             renderText("Paragon " + TextFormatting.GRAY + Paragon.VERSION, 3, 3, Colours.mainColour.getColour().getRGB());
+    }
+
+    public void drawInfo() {
+        if (info.isEnabled()) {
+            ScaledResolution scaledResolution = new ScaledResolution(mc);
+
+            float y = scaledResolution.getScaledHeight() - 11;
+
+            if (fps.isEnabled()) {
+                renderText("FPS " + TextFormatting.GRAY + Minecraft.getDebugFPS(), 1, y, -1);
+                y -= 11;
+            }
+        }
     }
 
     public void drawArrayList() {

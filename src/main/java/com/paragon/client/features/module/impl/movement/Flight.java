@@ -1,11 +1,10 @@
 package com.paragon.client.features.module.impl.movement;
 
-import com.paragon.api.event.events.UpdateEvent;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Flight extends Module {
 
@@ -22,9 +21,13 @@ public class Flight extends Module {
         mc.player.capabilities.isFlying = false;
     }
 
-    @EventHandler
-    private final Listener<UpdateEvent> updateEventListener = new Listener<>(event -> {
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (nullCheck()) {
+            return;
+        }
+
         mc.player.capabilities.isFlying = true;
-    });
+    }
 
 }

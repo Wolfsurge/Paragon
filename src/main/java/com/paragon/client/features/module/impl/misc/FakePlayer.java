@@ -1,18 +1,14 @@
 package com.paragon.client.features.module.impl.misc;
 
-import com.mojang.authlib.GameProfile;
 import com.paragon.api.util.player.EntityFakePlayer;
 import com.paragon.api.util.render.RenderUtil;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import java.awt.*;
-import java.util.UUID;
 
 /**
  * @author Wolfsurge
@@ -35,6 +31,7 @@ public class FakePlayer extends Module {
             return;
         }
 
+        // Create new fake player
         fakePlayer = new EntityFakePlayer("Fake Player");
     }
 
@@ -44,6 +41,7 @@ public class FakePlayer extends Module {
             return;
         }
 
+        // Despawn fake player
         fakePlayer.despawn();
     }
 

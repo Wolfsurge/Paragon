@@ -35,14 +35,6 @@ public class ModeSetting extends Setting {
     }
 
     /**
-     * Gets the available modes
-     * @return All available modes
-     */
-    public String[] getModes() {
-        return modes;
-    }
-
-    /**
      * Sets the available modes
      * @param modes The modes
      */
@@ -65,9 +57,16 @@ public class ModeSetting extends Setting {
     public void setCurrentMode(String newCurrentMode) {
         int index = 0;
         for(String str : modes) {
-            if(str.equalsIgnoreCase(newCurrentMode))
+            if(str.equalsIgnoreCase(newCurrentMode)) {
                 break;
+            }
+
             index++;
+        }
+
+        // Return if we couldn't find the given mode
+        if (index + 1 > modes.length) {
+            return;
         }
 
         this.currentMode = index;

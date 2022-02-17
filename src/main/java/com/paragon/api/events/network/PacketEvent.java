@@ -1,11 +1,13 @@
-package com.paragon.api.event.events.network;
+package com.paragon.api.events.network;
 
-import com.paragon.api.event.Event;
 import net.minecraft.network.Packet;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * @author Wolfsurge
  */
+@Cancelable
 public class PacketEvent extends Event {
 
     // The packet being sent

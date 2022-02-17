@@ -1,14 +1,13 @@
 package com.paragon.client.features.module.impl.combat;
 
-import com.paragon.api.event.events.UpdateEvent;
 import com.paragon.api.util.player.InventoryUtil;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
-import me.zero.alpine.listener.EventHandler;
-import me.zero.alpine.listener.Listener;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class AutoTotem extends Module {
 
@@ -16,10 +15,14 @@ public class AutoTotem extends Module {
         super("AutoTotem", "Automatically puts totems in your offhand", Category.COMBAT);
     }
 
-    @EventHandler
-    private final Listener<UpdateEvent> clientListener = new Listener<>(event -> {
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (nullCheck()) {
+            return;
+        }
+
         doAutoTotem();
-    });
+    }
 
     public void doAutoTotem() {
         if(InventoryUtil.hasItem(Items.TOTEM_OF_UNDYING)) {
