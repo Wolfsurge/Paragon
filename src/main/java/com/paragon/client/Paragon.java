@@ -15,8 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Paragon.MODID, name = Paragon.NAME, version = Paragon.VERSION)
-public class Paragon
-{
+public class Paragon {
     public static final String MODID = "paragon";
     public static final String NAME = "Paragon";
     public static final String VERSION = "DEV 300122";
@@ -35,14 +34,12 @@ public class Paragon
     public static PanelGUI panelGUI;
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
         logger = event.getModLog();
     }
 
     @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+    public void init(FMLInitializationEvent event) {
         // Create managers
         storageManager = new StorageManager();
         moduleManager = new ModuleManager();
