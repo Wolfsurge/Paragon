@@ -3,6 +3,7 @@ package com.paragon.client;
 import com.paragon.client.features.gui.panel.PanelGUI;
 import com.paragon.client.features.gui.taskbar.Taskbar;
 import com.paragon.client.features.gui.window.WindowGUI;
+import com.paragon.client.managers.CommandManager;
 import com.paragon.client.managers.ModuleManager;
 import com.paragon.client.managers.RotationManager;
 import com.paragon.client.managers.social.SocialManager;
@@ -27,6 +28,7 @@ public class Paragon
     public static RotationManager rotationManager;
     public static Taskbar taskbar;
     public static SocialManager socialManager;
+    public static CommandManager commandManager;
 
     // GUIs
     public static WindowGUI windowGUI;
@@ -49,6 +51,8 @@ public class Paragon
 
         socialManager = new SocialManager();
         storageManager.loadSocial();
+
+        commandManager = new CommandManager();
 
         windowGUI = new WindowGUI();
         panelGUI = new PanelGUI();

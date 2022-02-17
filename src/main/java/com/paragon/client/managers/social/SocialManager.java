@@ -64,7 +64,13 @@ public class SocialManager {
      * @param player The player to add
      */
     public void addPlayer(Player player) {
+        players.removeIf(player1 -> player1.getName().equalsIgnoreCase(player.getName()));
+
         players.add(player);
+    }
+
+    public void removePlayer(String name) {
+        players.removeIf(player -> player.getName().equalsIgnoreCase(name));
     }
 
 }
