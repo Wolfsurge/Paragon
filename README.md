@@ -10,7 +10,7 @@ Todo for 1.0 Release:
 - ESP [Done]
 - Tracers [Done]
 - AutoEZ
-- Panel GUI
+- Panel GUI [Done]
 - Colour Pickers [Done]
 - Commands
 
