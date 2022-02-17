@@ -1,6 +1,8 @@
 package com.paragon.api.util.player;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
@@ -21,11 +23,13 @@ public class RotationUtil {
      * @return A Vec2f of the angles
      */
     public static Vec2f getRotationToVec3d(Vec3d vec3d) {
-        float length = (float) Math.hypot(vec3d.x, vec3d.y);
-        float yaw = normaliseAngle((float) (Math.toDegrees(Math.atan2(vec3d.z, vec3d.x)) - 90));
-        float pitch = normaliseAngle((float) (Math.toDegrees(Math.atan2(vec3d.y, length)) - 90));
+        // find the yaw and pitch to the vector
+        Minecraft mc = Minecraft.getMinecraft();
+        float yaw = (float) (Math.toDegrees(Math.atan2(vec3d.subtract(mc.player.getPositionEyes(1)).z, vec3d.subtract(mc.player.getPositionEyes(1)).x)) - 90);
+        float pitch = (float) Math.toDegrees(-Math.atan2(vec3d.subtract(mc.player.getPositionEyes(1)).y, Math.hypot(vec3d.subtract(mc.player.getPositionEyes(1)).x, vec3d.subtract(mc.player.getPositionEyes(1)).z)));
 
-        return new Vec2f(yaw, pitch);
+        // wrap the degrees to values between -180 and 180
+        return new Vec2f(MathHelper.wrapDegrees(yaw), MathHelper.wrapDegrees(pitch));
     }
 
     /**

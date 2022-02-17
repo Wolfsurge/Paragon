@@ -1,5 +1,6 @@
 package com.paragon.client.features.module.impl.other;
 
+import com.paragon.client.Paragon;
 import com.paragon.client.features.gui.panel.PanelGUI;
 import com.paragon.client.features.gui.window.WindowGUI;
 import com.paragon.client.features.module.Category;
@@ -7,6 +8,7 @@ import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
+import com.paragon.client.features.module.settings.impl.NumberSetting;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 
@@ -14,10 +16,15 @@ import java.awt.*;
 
 public class GUI extends Module {
 
-    public static BooleanSetting window = new BooleanSetting("Window", "Settings for the Window GUI style", true);
+    // Window settings
+    public static BooleanSetting window = new BooleanSetting("Window", "Settings for the Window GUI style", false);
     public static BooleanSetting settingOutline = (BooleanSetting) new BooleanSetting("Setting Outline", "Draws an outline around the settings and expanded module", false).setParentSetting(window);
     public static BooleanSetting windowOutline = (BooleanSetting) new BooleanSetting("Window Outline", "Draws an outline around the window", true).setParentSetting(window);
     public static BooleanSetting separator = (BooleanSetting) new BooleanSetting("Separator", "Draws a bar in between the category buttons and the modules", true).setParentSetting(window);
+
+    // Panel settings
+    public static BooleanSetting panel = new BooleanSetting("Panel", "Settings for the Panel GUI style", false);
+    public static NumberSetting scrollSpeed = (NumberSetting) new NumberSetting("Scroll Speed", "How fast to scroll", 10, 5, 30, 1).setParentSetting(panel);
 
     // Shared settings
     public static BooleanSetting darkenBackground = new BooleanSetting("Darken Background", "Darkens the background whilst in the GUI", true);
@@ -32,7 +39,7 @@ public class GUI extends Module {
 
     public GUI() {
         super("GUI", "The GUI of the client", Category.OTHER, Keyboard.KEY_RSHIFT);
-        this.addSettings(window, darkenBackground, gradient, pause, style, backgroundColour, buttonColour, buttonBackgroundColour);
+        this.addSettings(window, panel, darkenBackground, gradient, pause, style, backgroundColour, buttonColour, buttonBackgroundColour);
     }
 
     @Override
@@ -44,11 +51,11 @@ public class GUI extends Module {
     public GuiScreen getGUI() {
         switch (style.getCurrentMode()) {
             case "Window":
-                return new WindowGUI();
+                return Paragon.windowGUI;
             case "Panel":
-                return new PanelGUI();
+                return Paragon.panelGUI;
         }
 
-        return new WindowGUI();
+        return Paragon.windowGUI;
     }
 }

@@ -2,11 +2,14 @@ package com.paragon.client.features.gui.window.components;
 
 import com.paragon.api.util.miscellaneous.TextRenderer;
 import com.paragon.api.util.render.RenderUtil;
+import com.paragon.client.features.gui.window.WindowGUI;
 import com.paragon.client.features.module.Category;
 import com.paragon.client.features.gui.window.components.impl.CategoryComponent;
 import com.paragon.client.features.gui.window.components.impl.ModuleButtonComponent;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ public class Window implements TextRenderer {
     private List<CategoryComponent> categoryButtons = new ArrayList<>();
 
     // The current selected category
-    private CategoryComponent selectedCategory;
+    // private CategoryComponent selectedCategory;
 
     /**
      * Create new window
@@ -147,7 +150,9 @@ public class Window implements TextRenderer {
      * @return The X of the window
      */
     public float getX() {
-        return x;
+        ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+
+        return scaledResolution.getScaledWidth() / 2f - 200;
     }
 
     /**
@@ -163,7 +168,9 @@ public class Window implements TextRenderer {
      * @return The Y of the window
      */
     public float getY() {
-        return y;
+        ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+
+        return scaledResolution.getScaledHeight() / 2f - 150;
     }
 
     /**
@@ -219,7 +226,7 @@ public class Window implements TextRenderer {
      * @return The selected category
      */
     public CategoryComponent getSelectedCategory() {
-        return selectedCategory;
+        return WindowGUI.selectedCategory;
     }
 
     /**
@@ -227,6 +234,6 @@ public class Window implements TextRenderer {
      * @param selectedCategory The new selected category
      */
     public void setSelectedCategory(CategoryComponent selectedCategory) {
-        this.selectedCategory = selectedCategory;
+        WindowGUI.selectedCategory = selectedCategory;
     }
 }

@@ -54,7 +54,7 @@ public class SettingComponent implements TextRenderer {
     }
 
     public void renderSetting(int mouseX, int mouseY) {
-        if (getSettingComponents().size() > 1) {
+        if (!getSettingComponents().isEmpty()) {
             GL11.glPushMatrix();
             GL11.glScalef(0.5f, 0.5f, 0.5f);
             renderText("...", (getModuleButton().getPanel().getX() + getModuleButton().getPanel().getWidth() - 9) * 2, (getModuleButton().getOffset() + getOffset() + 3.5f) * 2, -1);

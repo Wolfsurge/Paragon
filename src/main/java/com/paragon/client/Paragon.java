@@ -1,10 +1,11 @@
 package com.paragon.client;
 
 import com.paragon.api.event.EventParser;
+import com.paragon.client.features.gui.panel.PanelGUI;
 import com.paragon.client.features.gui.window.WindowGUI;
 import com.paragon.client.managers.ModuleManager;
 import com.paragon.client.managers.RotationManager;
-import com.paragon.client.managers.StorageManager;
+import com.paragon.client.managers.storage.StorageManager;
 import me.zero.alpine.EventManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -29,6 +30,7 @@ public class Paragon
 
     // GUIs
     public static WindowGUI windowGUI;
+    public static PanelGUI panelGUI;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -47,6 +49,7 @@ public class Paragon
         rotationManager = new RotationManager();
 
         windowGUI = new WindowGUI();
+        panelGUI = new PanelGUI();
 
         logger.info("[PARAGON] Initialised.");
     }

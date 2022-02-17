@@ -93,9 +93,9 @@ public class PanelGUI extends GuiScreen {
 
         for (Panel panel : panels) {
             if (dWheel > 0) {
-                panel.setY(panel.getY() - 6.5f);
+                panel.setY(panel.getY() - GUI.scrollSpeed.getValue());
             } else if (dWheel < 0) {
-                panel.setY(panel.getY() + 6.5f);
+                panel.setY(panel.getY() + GUI.scrollSpeed.getValue());
             }
         }
     }

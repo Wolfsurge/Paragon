@@ -26,6 +26,7 @@ public class Rotation implements Wrapper {
                 break;
             case LEGIT:
                 mc.player.rotationYaw = getYaw();
+                mc.player.rotationYawHead = getYaw();
                 mc.player.rotationPitch = getPitch();
                 break;
             default:

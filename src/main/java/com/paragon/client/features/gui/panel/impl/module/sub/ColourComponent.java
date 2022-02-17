@@ -31,6 +31,7 @@ public class ColourComponent extends SettingComponent {
         GL11.glPushMatrix();
         GL11.glScalef(0.5f, 0.5f, 0.5f);
         renderText(getSetting().getName(), (getModuleButton().getPanel().getX() + 4) * 2f, (getModuleButton().getOffset() + getOffset() + 4.5f) * 2f, -1);
+        renderText("...", (getModuleButton().getPanel().getX() + getModuleButton().getPanel().getWidth() - 9) * 2, (getModuleButton().getOffset() + getOffset() + 3.5f) * 2, -1);
         GL11.glPopMatrix();
 
         // Draw picker if expanded

@@ -3,6 +3,8 @@ package com.paragon.client.features.gui.window;
 import com.paragon.api.util.render.RenderUtil;
 import com.paragon.client.Paragon;
 import com.paragon.client.features.gui.window.components.Window;
+import com.paragon.client.features.gui.window.components.impl.CategoryComponent;
+import com.paragon.client.features.module.Category;
 import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
@@ -12,6 +14,8 @@ import net.minecraft.client.gui.ScaledResolution;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Wolfsurge
@@ -20,16 +24,28 @@ import java.io.IOException;
 public class WindowGUI extends GuiScreen {
 
     // The window to be rendered
-    private final Window mainWindow;
+    private Window mainWindow;
+
+    // The selected category
+    public static CategoryComponent selectedCategory;
 
     public WindowGUI() {
         ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+
         // Create window
         mainWindow = new Window("Paragon " + Paragon.VERSION, scaledResolution.getScaledWidth() / 2f - 200, scaledResolution.getScaledHeight() / 2f - 150, 400, 300);
 
         for(Module m : Paragon.moduleManager.modules) {
             Paragon.storageManager.loadModuleConfiguration(m);
         }
+    }
+
+    @Override
+    public void initGui() {
+        ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
+
+        // Reset X and Y
+        mainWindow = new Window("Paragon " + Paragon.VERSION, scaledResolution.getScaledWidth() / 2f - 200, scaledResolution.getScaledHeight() / 2f - 150, 400, 300);
     }
 
     @Override

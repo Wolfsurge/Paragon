@@ -65,21 +65,21 @@ public class AutoCrystal extends Module {
 
     // Targeting
     private final BooleanSetting targeting = new BooleanSetting("Targeting", "The targeting settings", false);
-    private final NumberSetting targetRange = (NumberSetting) new NumberSetting("Target Range", "How far to find targets", 7, 1, 15, 1).setParentSetting(targeting);
-    private final ModeSetting targetPriority = (ModeSetting) new ModeSetting("Target Priority", "The mode to find targets", "Distance", new String[]{"Distance", "Health"}).setParentSetting(targeting);
+    private final NumberSetting targetRange = (NumberSetting) new NumberSetting("Range", "How far to find targets", 7, 1, 15, 1).setParentSetting(targeting);
+    private final ModeSetting targetPriority = (ModeSetting) new ModeSetting("Priority", "The mode to find targets", "Distance", new String[]{"Distance", "Health"}).setParentSetting(targeting);
     private final BooleanSetting reverseList = (BooleanSetting) new BooleanSetting("Reverse Target List", "Reverse the targets list, to find the player with the highest value", false).setParentSetting(targeting);
 
     // Placing
     private final BooleanSetting place = new BooleanSetting("Place", "Automatically place crystals", true);
     private final ModeSetting when = (ModeSetting) new ModeSetting("When", "When to place crystals", "Holding", new String[]{"Holding", "Switch", "Silent Switch"}).setParentSetting(place);
-    private final NumberSetting placeRange = (NumberSetting) new NumberSetting("Place Range", "The limit on how far away you place crystals", 5, 1, 9, 1).setParentSetting(place);
+    private final NumberSetting placeRange = (NumberSetting) new NumberSetting("Range", "The limit on how far away you place crystals", 5, 1, 9, 1).setParentSetting(place);
     private final ModeSetting placeRotation = (ModeSetting) new ModeSetting("Rotate", "How to rotate when placing the crystal", "Packet", new String[]{"Packet", "Legit", "None"}).setParentSetting(place);
     private final NumberSetting placeCooldown = (NumberSetting) new NumberSetting("Place Cooldown", "How long to cool down for", 0, 0, 80, 1).setParentSetting(place);
 
     // Breaking
     private final BooleanSetting breakCrystals = new BooleanSetting("Break", "Break crystals around you", true);
-    private final NumberSetting breakRange = (NumberSetting) new NumberSetting("Break Range", "The range in which to break crystals", 5, 2, 8, 1).setParentSetting(breakCrystals);
-    private final ModeSetting breakLogic = (ModeSetting) new ModeSetting("Break Logic", "Which crystals to break", "Smart", new String[]{"All", "Self", "Smart", "Self Smart"}).setParentSetting(breakCrystals);
+    private final NumberSetting breakRange = (NumberSetting) new NumberSetting("Range", "The range in which to break crystals", 5, 2, 8, 1).setParentSetting(breakCrystals);
+    private final ModeSetting breakLogic = (ModeSetting) new ModeSetting("Logic", "Which crystals to break", "Smart", new String[]{"All", "Self", "Smart", "Self Smart"}).setParentSetting(breakCrystals);
     private final BooleanSetting instant = (BooleanSetting) new BooleanSetting("Instant", "Instantly hit crystals", true).setParentSetting(breakCrystals);
     private final BooleanSetting swing = (BooleanSetting) new BooleanSetting("Swing", "Swing your hand when you break a crystal", true).setParentSetting(breakCrystals);
     private final ModeSetting breakRotation = (ModeSetting) new ModeSetting("Rotate", "How to rotate when breaking crystals", "Packet", new String[]{"Packet", "Legit", "None"}).setParentSetting(breakCrystals);
@@ -95,7 +95,7 @@ public class AutoCrystal extends Module {
 
     // HUD Info
     private final BooleanSetting HUD = new BooleanSetting("HUD", "HUD Settings for the module", false);
-    private final ModeSetting hudInfo = (ModeSetting) new ModeSetting("HUD Info", "What text to display on the Array List", "Target Info", new String[]{"Target Info", "Crystal Count"}).setParentSetting(HUD);
+    private final ModeSetting hudInfo = (ModeSetting) new ModeSetting("Mode", "What text to display on the Array List", "Target Info", new String[]{"Target Info", "Crystal Count"}).setParentSetting(HUD);
     private final BooleanSetting targetHealth = (BooleanSetting) new BooleanSetting("Target Health", "Show target health in the Array List", true).setParentSetting(HUD);
 
     // Render
@@ -388,6 +388,10 @@ public class AutoCrystal extends Module {
     }
 
     public void breakCrystal(EntityEnderCrystal crystal) {
+        if (!isWithinDamageParameters(crystal.getPosition(), currentTarget)) {
+            return;
+        }
+
         int antiWeaknessOldSlot = mc.player.inventory.currentItem;
 
         if (!antiWeakness.is("Off")) {
@@ -403,7 +407,7 @@ public class AutoCrystal extends Module {
         }
 
         // Rotate to crystal
-        Vec2f rotation = RotationUtil.getRotationToVec3d(new Vec3d(crystal.posX + 0.5f, crystal.posY + 0.5f, crystal.posZ + 0.5f));
+        Vec2f rotation = RotationUtil.getRotationToVec3d(new Vec3d(crystal.posX, crystal.posY + 0.5f, crystal.posZ));
         new Rotation(rotation.x, rotation.y, RotationType.valueOf(breakRotation.getCurrentMode().toUpperCase())).doRotation();
 
         if (instant.isEnabled()) {
@@ -428,6 +432,7 @@ public class AutoCrystal extends Module {
             if (weakness != null && (strength == null || strength.getAmplifier() < weakness.getAmplifier())) {
                 // Switch back
                 mc.getConnection().sendPacket(new CPacketHeldItemChange(antiWeaknessOldSlot));
+                mc.player.inventory.currentItem = antiWeaknessOldSlot;
             }
         }
     }

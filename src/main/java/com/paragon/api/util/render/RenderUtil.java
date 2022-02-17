@@ -103,33 +103,44 @@ public class RenderUtil implements Wrapper {
      * @param lineWidth Width of the line
      */
     public static void drawLine3D(double x1, double y1, double z1, double x2, double y2, double z2, int color, boolean disableDepth, float lineWidth) {
-        // Enable 3D render
-        if(disableDepth) {
-            glDisable(GL_ALPHA_TEST);
-            glEnable(GL_BLEND);
+        // Enable render 3D
+        if (disableDepth) {
+            glDepthMask(false);
+            glDisable(GL_DEPTH_TEST);
         }
+        glDisable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
         glDisable(GL_TEXTURE_2D);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_LINE_SMOOTH);
         glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+        glLineWidth(0.1F);
 
+        // Colour line
         ColourUtil.setColor(color);
-        glLineWidth(lineWidth);
-        glBegin(1);
+
+        // Set line width
+        glLineWidth((float) lineWidth);
+        glBegin(GL_CURRENT_BIT);
+
+        // Draw line
         glVertex3d(x1, y1, z1);
         glVertex3d(x2, y2, z2);
+
         glEnd();
 
-        // Disable 3D render
+        // Disable render 3D
         if (disableDepth) {
-            GL11.glDepthMask(true);
-            GL11.glEnable(GL_DEPTH_TEST);
+            glDepthMask(true);
+            glEnable(GL_DEPTH_TEST);
         }
-        GL11.glEnable(GL_TEXTURE_2D);
-        GL11.glDisable(GL_BLEND);
-        GL11.glEnable(GL_ALPHA_TEST);
-        GL11.glDisable(GL_LINE_SMOOTH);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        glEnable(GL_TEXTURE_2D);
+        glDisable(GL_BLEND);
+        glEnable(GL_ALPHA_TEST);
+        glDisable(GL_LINE_SMOOTH);
+
+        // Reset colour
+        glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     /**

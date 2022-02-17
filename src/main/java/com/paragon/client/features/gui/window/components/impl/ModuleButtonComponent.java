@@ -189,7 +189,7 @@ public class ModuleButtonComponent implements TextRenderer {
 
         for (SettingComponent settingComponent : getSettingComponents()) {
             settingComponent.setY(offset);
-            offset += settingComponent.getHeight() + settingComponent.getSettingHeight() + 1;
+            offset += settingComponent.getHeight() + settingComponent.getSettingHeight() + .5f;
         }
     }
 
