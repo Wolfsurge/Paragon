@@ -48,7 +48,7 @@ public class GUI extends Module {
         toggle();
     }
 
-    public GuiScreen getGUI() {
+    public static GuiScreen getGUI() {
         switch (style.getCurrentMode()) {
             case "Window":
                 return Paragon.windowGUI;

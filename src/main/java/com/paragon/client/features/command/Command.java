@@ -10,7 +10,7 @@ public abstract class Command {
         this.syntax = syntax;
     }
 
-    public abstract void whenCalled(String[] args);
+    public abstract void whenCalled(String[] args, boolean fromConsole);
 
     /**
      * Gets the command's name

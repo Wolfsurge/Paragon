@@ -1,6 +1,7 @@
 package com.paragon.client.managers;
 
 import com.paragon.api.util.Wrapper;
+import com.paragon.client.Paragon;
 import com.paragon.client.features.command.Command;
 import com.paragon.client.features.command.impl.SocialCommand;
 import net.minecraft.util.text.ITextComponent;
@@ -20,7 +21,7 @@ public class CommandManager implements Wrapper {
 
     public static String prefix = ">>";
 
-    private ArrayList<Command> commands = new ArrayList<>();
+    private static ArrayList<Command> commands = new ArrayList<>();
 
     public CommandManager() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -34,29 +35,36 @@ public class CommandManager implements Wrapper {
         if (event.getMessage().startsWith(prefix)) {
             event.setCanceled(true);
 
-            String message = event.getMessage().substring(prefix.length());
+            handleCommands(event.getMessage().substring(prefix.length()), false);
+        }
+    }
 
-            if (message.split(" ").length > 0) {
-                boolean commandFound = false;
-                String commandName = message.split(" ")[0];
+    public static void handleCommands(String message, boolean fromConsole) {
+        if (message.split(" ").length > 0) {
+            boolean commandFound = false;
+            String commandName = message.split(" ")[0];
 
-                for (Command command : commands) {
-                    if (command.getName().equalsIgnoreCase(commandName)) {
-                        command.whenCalled(Arrays.copyOfRange(message.split(" "), 1, message.split(" ").length));
-                        commandFound = true;
-                        break;
-                    }
+            for (Command command : commands) {
+                if (command.getName().equalsIgnoreCase(commandName)) {
+                    command.whenCalled(Arrays.copyOfRange(message.split(" "), 1, message.split(" ").length), fromConsole);
+                    commandFound = true;
+                    break;
                 }
+            }
 
-                if (!commandFound) {
-                    sendClientMessage(TextFormatting.RED + "Command not found!");
-                }
+            if (!commandFound) {
+                sendClientMessage(TextFormatting.RED + "Command not found!", fromConsole);
             }
         }
     }
 
-    public static void sendClientMessage(String message) {
-        mc.player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Paragon " + TextFormatting.WHITE + "> " + message));
+    public static void sendClientMessage(String message, boolean fromConsole) {
+        // Only send chat message if the message wasn't sent from the console
+        if (!fromConsole) {
+            mc.player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Paragon " + TextFormatting.WHITE + "> " + message));
+        }
+
+        Paragon.console.addLine(TextFormatting.LIGHT_PURPLE + "Paragon " + TextFormatting.WHITE + "> " + message);
     }
 
 }

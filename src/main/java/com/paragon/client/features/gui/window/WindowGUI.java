@@ -83,6 +83,9 @@ public class WindowGUI extends GuiScreen {
 
         // Handle clicks in the window
         mainWindow.mouseClicked(mouseX, mouseY, mouseButton);
+
+        // Handle taskbar clicks
+        Paragon.taskbar.mouseClicked(mouseX, mouseY);
     }
 
     @Override

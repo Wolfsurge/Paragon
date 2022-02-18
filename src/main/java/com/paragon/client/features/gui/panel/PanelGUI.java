@@ -68,6 +68,8 @@ public class PanelGUI extends GuiScreen {
             panel.mouseClicked(mouseX, mouseY, mouseButton);
         });
 
+        Paragon.taskbar.mouseClicked(mouseX, mouseY);
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

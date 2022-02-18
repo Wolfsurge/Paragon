@@ -283,9 +283,13 @@ public class AutoCrystal extends Module {
      */
     public EntityPlayer getBestTarget() {
         // Get entity list
-        Stream<Entity> entityStream = mc.world.loadedEntityList.stream().filter(entity -> entity instanceof EntityOtherPlayerMP && entity.getDistance(mc.player) <= targetRange.getValue());
-        // Turn into list
-        List<Entity> playerEntities = entityStream.collect(Collectors.toList());
+        List<Entity> playerEntities = new ArrayList<>();
+
+        mc.world.loadedEntityList.forEach(entity -> {
+            if (entity instanceof EntityOtherPlayerMP && entity.getDistance(mc.player) <= targetRange.getValue()) {
+                playerEntities.add(entity);
+            }
+        });
 
         // Sort
         if(targetPriority.is("Closest")) playerEntities.sort(Comparator.comparingDouble(entity -> entity.getDistance(mc.player)));

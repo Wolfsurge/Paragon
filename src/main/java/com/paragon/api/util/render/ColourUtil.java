@@ -22,13 +22,13 @@ public class ColourUtil {
 
     /**
      * Sets the GL colour based on a hex integer
-     * @param colorHex The integer of the hex value
+     * @param colourHex The integer of the hex value
      */
-    public static void setColor(int colorHex) {
-        float alpha = (colorHex >> 24 & 0xFF) / 255.0F;
-        float red = (colorHex >> 16 & 0xFF) / 255.0F;
-        float green = (colorHex >> 8 & 0xFF) / 255.0F;
-        float blue = (colorHex & 0xFF) / 255.0F;
+    public static void setColour(int colourHex) {
+        float alpha = (colourHex >> 24 & 0xFF) / 255.0F;
+        float red = (colourHex >> 16 & 0xFF) / 255.0F;
+        float green = (colourHex >> 8 & 0xFF) / 255.0F;
+        float blue = (colourHex & 0xFF) / 255.0F;
         GL11.glColor4f(red, green, blue, (alpha == 0.0F) ? 1.0F : alpha);
     }
 

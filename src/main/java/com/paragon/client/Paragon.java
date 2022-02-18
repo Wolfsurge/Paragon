@@ -1,5 +1,6 @@
 package com.paragon.client;
 
+import com.paragon.client.features.gui.console.Console;
 import com.paragon.client.features.gui.panel.PanelGUI;
 import com.paragon.client.features.gui.taskbar.Taskbar;
 import com.paragon.client.features.gui.window.WindowGUI;
@@ -32,6 +33,7 @@ public class Paragon {
     // GUIs
     public static WindowGUI windowGUI;
     public static PanelGUI panelGUI;
+    public static Console console;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -53,6 +55,7 @@ public class Paragon {
 
         windowGUI = new WindowGUI();
         panelGUI = new PanelGUI();
+        console = new Console("Paragon Console", 400, 350);
 
         logger.info("[PARAGON] Initialised.");
     }
