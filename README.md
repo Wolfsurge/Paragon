@@ -1,4 +1,5 @@
-![ParagonBanner](https://user-images.githubusercontent.com/85251388/154859732-a0d34904-401d-4c16-8839-d4e127573bf1.png)
+![ParagonBanner1](https://user-images.githubusercontent.com/85251388/154859895-65627d8d-0753-43ea-91c4-d8c092e478c3.png)
+
 
 
 # Paragon
