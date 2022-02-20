@@ -58,10 +58,10 @@ dependencies {
         exclude module: 'log4j-core'
     }
 
-    compile "com.github.ZeroMemes:Alpine:1.5"
+    compile 'com.github.ZeroMemes:Alpine:1.5'
     compile group: 'net.jodah', name: 'typetools', version: '0.6.3'
     compile group: 'org.json', name: 'json', version: '20090211'
-    compile group: 'com.github.Litarvan:OpenAuth:1.1.2'
+    compile 'com.github.Litarvan:OpenAuth:1.1.2'
 }
 
 processResources {
