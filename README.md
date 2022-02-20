@@ -4,7 +4,7 @@ A 1.12.2 Anarchy Client
 Created by Wolfsurge and TeleTofu
 
 Todo for 1.0 Release:
-- AutoCrystal [WIP, functioning]
+- AutoCrystal [needs a fucking rewrite urgently]
 - [Better] Offhand
 - NCP Bypassing Step
 - ESP [Done]
@@ -12,7 +12,7 @@ Todo for 1.0 Release:
 - AutoEZ
 - Panel GUI [Done]
 - Colour Pickers [Done]
-- Commands
+- Commands [Done]
 
 # Build instruction
 Windows:
