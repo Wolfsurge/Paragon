@@ -1,3 +1,6 @@
+![ParagonBanner](https://user-images.githubusercontent.com/85251388/154859732-a0d34904-401d-4c16-8839-d4e127573bf1.png)
+
+
 # Paragon
 A 1.12.2 Anarchy Client
 
