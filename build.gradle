@@ -86,11 +86,13 @@ reobf {
 
 shadowJar {
     dependencies {
-		include(dependency('org.spongepowered:mixin'))
-		include(dependency('com.github.ZeroMemes:Alpine'))
-		include(dependency('net.jodah:typetools'))
-	}
-	classifier = 'release'
+	include(dependency('org.spongepowered:mixin'))
+	include(dependency('com.github.ZeroMemes:Alpine'))
+	include(dependency('net.jodah:typetools'))
+    }
+
+    rename 'mixin.refmap.json', 'mixins.paragon.refmap.json'
+    classifier = 'release'
 }
 
 jar {
