@@ -84,11 +84,21 @@ reobf {
     }
 }
 
+shadowJar {
+    dependencies {
+		include(dependency('org.spongepowered:mixin'))
+		include(dependency('com.github.ZeroMemes:Alpine'))
+		include(dependency('net.jodah:typetools'))
+	}
+	classifier = 'release'
+}
+
 jar {
     manifest.attributes(
         'MixinConfigs': mixinConfig,
         'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
         'TweakOrder': 0,
+        'FMLCorePluginContainsFMLMod': 'true',
         'FMLCorePlugin': mixinClass,
         'ForceLoadAsMod': 'true',
         'FMLAT': 'paragon_at.cfg'
@@ -96,8 +106,3 @@ jar {
 }
 
 build.dependsOn(shadowJar)
-
-// sourceSets { main { output.resourcesDir = output.classesDir } }
-
-// Should you want to run the client through IDEA, comment the below line by putting '//' before it
-sourceSets { sourceSets -> main }
