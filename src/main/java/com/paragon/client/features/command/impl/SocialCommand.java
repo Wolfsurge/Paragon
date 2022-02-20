@@ -19,6 +19,11 @@ public class SocialCommand extends Command {
     public void whenCalled(String[] args, boolean fromConsole) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             // List all players
+            if (Paragon.socialManager.players.isEmpty()) {
+                CommandManager.sendClientMessage(TextFormatting.RED + "You haven't added anyone to your social list!", fromConsole);
+                return;
+            }
+
             for (Player player : Paragon.socialManager.players) {
                 CommandManager.sendClientMessage(player.getName() + " - " + player.getRelationship().toString(), fromConsole);
             }

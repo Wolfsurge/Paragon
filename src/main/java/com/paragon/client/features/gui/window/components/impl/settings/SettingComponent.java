@@ -31,7 +31,9 @@ public class SettingComponent {
         float settingHeight = 0f;
 
         for (SettingComponent settingComponent : settingComponents) {
-            settingHeight += settingComponent.getHeight() + 0.5f;
+            if (settingComponent.getSetting().isVisible()) {
+                settingHeight += settingComponent.getHeight() + 0.5f;
+            }
         }
 
         return expanded ? settingHeight : 0;
@@ -42,9 +44,21 @@ public class SettingComponent {
         float offset = getY() + getHeight() + 0.5f;
 
         for (SettingComponent settingComponent : settingComponents) {
-            settingComponent.setY(offset);
-            offset += settingComponent.getHeight() + 0.5f;
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.setY(offset);
+                offset += settingComponent.getHeight() + 0.5f;
+            }
         }
+    }
+
+    public boolean hasVisibleSubsettings() {
+        for (SettingComponent settingComponent : settingComponents) {
+            if (settingComponent.getSetting().isVisible()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

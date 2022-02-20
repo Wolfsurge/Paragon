@@ -1,5 +1,6 @@
 package com.paragon.client;
 
+import com.paragon.asm.mixins.accessor.IMinecraft;
 import com.paragon.client.features.gui.console.Console;
 import com.paragon.client.features.gui.panel.PanelGUI;
 import com.paragon.client.features.gui.taskbar.Taskbar;
@@ -9,6 +10,11 @@ import com.paragon.client.managers.ModuleManager;
 import com.paragon.client.managers.RotationManager;
 import com.paragon.client.managers.social.SocialManager;
 import com.paragon.client.managers.storage.StorageManager;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
+import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class Paragon {
     public static final String MODID = "paragon";
     public static final String NAME = "Paragon";
-    public static final String VERSION = "DEV 300122";
+    public static final String VERSION = "1.0";
 
     private static Logger logger;
 

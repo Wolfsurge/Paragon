@@ -6,10 +6,14 @@
   "minVersion": "0.7.4",
   "mixins": [
     "accessor.ICPacketUseEntity",
+    "accessor.IMinecraft",
 
     "network.MixinNetworkManager",
 
+    "player.MixinEntityPlayer",
+
     "render.gui.MixinGuiMainMenu",
+    "render.gui.MixinGuiMultiplayer",
     "render.entity.MixinRenderLivingBase"
   ]
 }

@@ -3,7 +3,9 @@ package com.paragon.client.managers;
 import com.paragon.api.util.Wrapper;
 import com.paragon.client.Paragon;
 import com.paragon.client.features.command.Command;
+import com.paragon.client.features.command.impl.HelpCommand;
 import com.paragon.client.features.command.impl.SocialCommand;
+import com.paragon.client.features.command.impl.SyntaxCommand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -13,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Wolfsurge
@@ -27,6 +30,8 @@ public class CommandManager implements Wrapper {
         MinecraftForge.EVENT_BUS.register(this);
 
         commands.add(new SocialCommand());
+        commands.add(new SyntaxCommand());
+        commands.add(new HelpCommand());
     }
 
     @SubscribeEvent
@@ -65,6 +70,14 @@ public class CommandManager implements Wrapper {
         }
 
         Paragon.console.addLine(TextFormatting.LIGHT_PURPLE + "Paragon " + TextFormatting.WHITE + "> " + message);
+    }
+
+    /**
+     * Gets the commands
+     * @return The commands
+     */
+    public List<Command> getCommands() {
+        return commands;
     }
 
 }

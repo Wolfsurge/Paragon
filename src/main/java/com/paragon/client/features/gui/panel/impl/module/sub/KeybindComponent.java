@@ -41,7 +41,9 @@ public class KeybindComponent extends SettingComponent {
 
         if (isExpanded()) {
             getSettingComponents().forEach(settingComponent -> {
-                settingComponent.mouseClicked(mouseX, mouseY, mouseButton);
+                if (settingComponent.getSetting().isVisible()) {
+                    settingComponent.mouseClicked(mouseX, mouseY, mouseButton);
+                }
             });
         }
 

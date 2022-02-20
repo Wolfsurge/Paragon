@@ -109,7 +109,7 @@ public class ColourComponent extends SettingComponent {
         if (pickingHue) {
             float restrictedX = Math.min(Math.max(hueSliderX, mouseX), hueSliderX + hueSliderWidth);
             color[0] = (restrictedX - hueSliderX) / hueSliderWidth;
-            color[0] = (float) Math.min(0.999, color[0]);
+            color[0] = Math.min(1, color[0]);
         }
 
         if (pickingAlpha) {
@@ -150,29 +150,15 @@ public class ColourComponent extends SettingComponent {
 
     public void drawHueSlider(float x, float y, float width, float height, float hue) {
         int step = 0;
-        if (height > width) {
-            RenderUtil.drawSelectRect(x, y, x + width, y + 4, 0xFFFF0000);
-            y += 4;
-
-            for (int colorIndex = 0; colorIndex < 6; colorIndex++) {
-                int previousStep = Color.HSBtoRGB((float) step / 6, 1.0f, 1.0f);
-                int nextStep = Color.HSBtoRGB((float) (step + 1) / 6, 1.0f, 1.0f);
-                // RenderUtil.drawGradientRect(x, y + step * (height / 6f), x + width, y + (step + 1) * (height / 6f), previousStep, nextStep, false);
-                step++;
-            }
-            int sliderMinY = (int) (y + height*hue) - 4;
-            RenderUtil.drawSelectRect(x, sliderMinY - 1, x + width, sliderMinY + 1,-1);
-        } else {
-            for (int colorIndex = 0; colorIndex < 6; colorIndex++) {
-                int previousStep = Color.HSBtoRGB((float) step / 6, 1.0f, 1.0f);
-                int nextStep = Color.HSBtoRGB((float) (step + 1) / 6, 1.0f, 1.0f);
-                RenderUtil.leftGradient(x + step * (width / 6), y, x + (step + 1) * (width / 6), y + height, previousStep, nextStep);
-                step++;
-            }
-
-            int sliderMinX = (int) (x + (width * hue));
-            RenderUtil.drawSelectRect(sliderMinX - 0.5f, y, sliderMinX + 0.5f, y + height, -1);
+        for (int colorIndex = 0; colorIndex < 6; colorIndex++) {
+            int previousStep = Color.HSBtoRGB((float) step / 6, 1.0f, 1.0f);
+            int nextStep = Color.HSBtoRGB((float) (step + 1) / 6, 1.0f, 1.0f);
+            RenderUtil.leftGradient(x + step * (width / 6), y, x + (step + 1) * (width / 6), y + height, previousStep, nextStep);
+            step++;
         }
+
+        int sliderMinX = (int) (x + (width * hue));
+        RenderUtil.drawSelectRect(sliderMinX - 0.5f, y, sliderMinX + 0.5f, y + height, -1);
     }
 
     public void drawAlphaSlider(float x, float y, float width, float height, float red, float green, float blue, float alpha) {

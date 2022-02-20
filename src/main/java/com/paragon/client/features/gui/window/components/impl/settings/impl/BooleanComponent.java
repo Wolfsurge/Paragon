@@ -81,7 +81,9 @@ public class BooleanComponent extends SettingComponent implements TextRenderer {
 
         if (expanded) {
             for (SettingComponent settingComponent : settingComponents) {
-                settingComponent.render(mouseX, mouseY);
+                if (settingComponent.getSetting().isVisible()) {
+                    settingComponent.render(mouseX, mouseY);
+                }
             }
         }
 

@@ -6,6 +6,7 @@ import com.paragon.client.features.module.impl.combat.AutoCrystal;
 import com.paragon.client.features.module.impl.combat.AutoTotem;
 import com.paragon.client.features.module.impl.hud.HUD;
 import com.paragon.client.features.module.impl.misc.ChatModifications;
+import com.paragon.client.features.module.impl.movement.ElytraFlight;
 import com.paragon.client.features.module.impl.movement.Flight;
 import com.paragon.client.features.module.impl.movement.Step;
 import com.paragon.client.features.module.impl.movement.Velocity;
@@ -34,8 +35,9 @@ public class ModuleManager {
         modules.add(new AutoCrystal());
         modules.add(new AutoTotem());
 
-        modules.add(new Step());
+        modules.add(new ElytraFlight());
         modules.add(new Flight());
+        modules.add(new Step());
         modules.add(new Velocity());
 
         modules.add(new ESP());

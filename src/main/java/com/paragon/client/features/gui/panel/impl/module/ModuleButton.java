@@ -92,8 +92,10 @@ public class ModuleButton implements TextRenderer {
         if (expanded) {
             // Render settings
             settingComponents.forEach(settingComponent -> {
-                settingComponent.renderSetting(mouseX, mouseY);
-                RenderUtil.drawRect(getPanel().getX(), getOffset() + settingComponent.getOffset(), 1, settingComponent.getHeight(), Colours.mainColour.getColour().getRGB());
+                if (settingComponent.getSetting().isVisible()) {
+                    settingComponent.renderSetting(mouseX, mouseY);
+                    RenderUtil.drawRect(getPanel().getX(), getOffset() + settingComponent.getOffset(), 1, settingComponent.getHeight(), Colours.mainColour.getColour().getRGB());
+                }
             });
         }
     }
@@ -124,20 +126,26 @@ public class ModuleButton implements TextRenderer {
         if (expanded) {
             // Mouse clicked
             for (SettingComponent settingComponent : settingComponents) {
-                settingComponent.mouseClicked(mouseX, mouseY, mouseButton);
+                if (settingComponent.getSetting().isVisible()) {
+                    settingComponent.mouseClicked(mouseX, mouseY, mouseButton);
+                }
             }
         }
     }
 
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         for (SettingComponent settingComponent : settingComponents) {
-            settingComponent.mouseReleased(mouseX, mouseY, mouseButton);
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.mouseReleased(mouseX, mouseY, mouseButton);
+            }
         }
     }
 
     public void keyTyped(char keyTyped, int keyCode) {
         for (SettingComponent settingComponent : settingComponents) {
-            settingComponent.keyTyped(keyTyped, keyCode);
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.keyTyped(keyTyped, keyCode);
+            }
         }
     }
 
@@ -145,13 +153,17 @@ public class ModuleButton implements TextRenderer {
         float settingOffset = 13;
 
         for (SettingComponent settingComponent : settingComponents) {
-            settingComponent.setOffset(settingOffset);
-            settingOffset += settingComponent.getHeight();
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.setOffset(settingOffset);
+                settingOffset += settingComponent.getHeight();
 
-            if (settingComponent.isExpanded()) {
-                for (SettingComponent settingComponent1 : settingComponent.getSettingComponents()) {
-                    settingComponent1.setOffset(settingOffset);
-                    settingOffset += settingComponent1.getHeight();
+                if (settingComponent.isExpanded()) {
+                    for (SettingComponent settingComponent1 : settingComponent.getSettingComponents()) {
+                        if (settingComponent1.getSetting().isVisible()) {
+                            settingComponent1.setOffset(settingOffset);
+                            settingOffset += settingComponent1.getHeight();
+                        }
+                    }
                 }
             }
         }
@@ -197,11 +209,15 @@ public class ModuleButton implements TextRenderer {
         float settingHeight = 0;
 
         for (SettingComponent settingComponent : settingComponents) {
-            settingHeight += settingComponent.getHeight();
+            if (settingComponent.getSetting().isVisible()) {
+                settingHeight += settingComponent.getHeight();
 
-            if (settingComponent.isExpanded()) {
-                for (SettingComponent settingComponent1 : settingComponent.getSettingComponents()) {
-                    settingHeight += settingComponent1.getHeight();
+                if (settingComponent.isExpanded()) {
+                    for (SettingComponent settingComponent1 : settingComponent.getSettingComponents()) {
+                        if (settingComponent1.getSetting().isVisible()) {
+                            settingHeight += settingComponent1.getHeight();
+                        }
+                    }
                 }
             }
         }

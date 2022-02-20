@@ -6,19 +6,13 @@ import com.paragon.client.features.module.settings.Setting;
 import com.paragon.client.features.module.settings.impl.*;
 import com.paragon.client.managers.social.Player;
 import com.paragon.client.managers.social.Relationship;
-import jdk.nashorn.internal.parser.JSONParser;
-import net.minecraftforge.event.world.NoteBlockEvent;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import scala.xml.PrettyPrinter;
-
 import java.awt.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Wolfsurge
@@ -126,6 +120,9 @@ public class StorageManager {
         }
     }
 
+    /**
+     * Saves the social interactions
+     */
     public void saveSocial() {
         if(!friendsFolder.exists()) friendsFolder.mkdirs();
 
@@ -156,6 +153,9 @@ public class StorageManager {
         }
     }
 
+    /**
+     * Loads the social interactions
+     */
     public void loadSocial() {
         if(!friendsFolder.exists()) friendsFolder.mkdirs();
 

@@ -282,6 +282,11 @@ public class AutoCrystal extends Module {
      * @return The best player to target
      */
     public EntityPlayer getBestTarget() {
+        // Can cause a crash.
+        if (mc.world == null || mc.world.loadedEntityList == null) {
+            return null;
+        }
+
         // Get entity list
         List<Entity> playerEntities = new ArrayList<>();
 

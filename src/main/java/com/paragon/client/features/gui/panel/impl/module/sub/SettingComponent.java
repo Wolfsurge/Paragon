@@ -54,7 +54,7 @@ public class SettingComponent implements TextRenderer {
     }
 
     public void renderSetting(int mouseX, int mouseY) {
-        if (!getSettingComponents().isEmpty()) {
+        if (!getSettingComponents().isEmpty() && hasVisibleSubsettings()) {
             GL11.glPushMatrix();
             GL11.glScalef(0.5f, 0.5f, 0.5f);
             renderText("...", (getModuleButton().getPanel().getX() + getModuleButton().getPanel().getWidth() - 9) * 2, (getModuleButton().getOffset() + getOffset() + 3.5f) * 2, -1);
@@ -62,12 +62,28 @@ public class SettingComponent implements TextRenderer {
         }
 
         if (expanded) {
-            getSettingComponents().forEach(settingComponent -> settingComponent.renderSetting(mouseX, mouseY));
+            getSettingComponents().forEach(settingComponent -> {
+                if (settingComponent.getSetting().isVisible()) {
+                    settingComponent.renderSetting(mouseX, mouseY);
+                }
+            });
 
             for (SettingComponent settingComponent : settingComponents) {
-                RenderUtil.drawRect(getModuleButton().getPanel().getX(), getModuleButton().getOffset() + settingComponent.getOffset(), 2, settingComponent.getHeight(), Colours.mainColour.getColour().getRGB());
+                if (settingComponent.getSetting().isVisible()) {
+                    RenderUtil.drawRect(getModuleButton().getPanel().getX(), getModuleButton().getOffset() + settingComponent.getOffset(), 2, settingComponent.getHeight(), Colours.mainColour.getColour().getRGB());
+                }
             }
         }
+    }
+
+    public boolean hasVisibleSubsettings() {
+        for (SettingComponent settingComponent : getSettingComponents()) {
+            if (settingComponent.getSetting().isVisible()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {

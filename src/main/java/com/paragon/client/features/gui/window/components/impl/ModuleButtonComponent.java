@@ -85,7 +85,9 @@ public class ModuleButtonComponent implements TextRenderer {
             RenderUtil.startGlScissor(getParentCategory().getParentWindow().getX() + 203, getParentCategory().getY() + 21, 197, 259);
             settingMouseScroll(mouseX, mouseY);
             for(SettingComponent settingComponent : settingComponents) {
-                settingComponent.render(mouseX, mouseY);
+                if (settingComponent.getSetting().isVisible()) {
+                    settingComponent.render(mouseX, mouseY);
+                }
             }
             RenderUtil.endGlScissor();
         }
@@ -131,11 +133,11 @@ public class ModuleButtonComponent implements TextRenderer {
             }
         } else if(isMouseOverSettings(mouseX, mouseY) && getParentCategory().getSelectedModule() == getModule()) {
             for(SettingComponent settingComponent : settingComponents)
-                if(settingComponent.isMouseOnButton(mouseX, mouseY))
+                if(settingComponent.isMouseOnButton(mouseX, mouseY) && settingComponent.getSetting().isVisible()) {
                     settingComponent.whenClicked(mouseX, mouseY, mouseClicked);
-                else if (settingComponent.expanded) {
+                } else if (settingComponent.expanded && settingComponent.getSetting().isVisible()) {
                     for (SettingComponent settingComponent1 : settingComponent.settingComponents) {
-                        if (settingComponent1.isMouseOnButton(mouseX, mouseY)) {
+                        if (settingComponent1.isMouseOnButton(mouseX, mouseY) && settingComponent1.getSetting().isVisible()) {
                             settingComponent1.whenClicked(mouseX, mouseY, mouseClicked);
                         }
                     }
@@ -150,8 +152,11 @@ public class ModuleButtonComponent implements TextRenderer {
      * @param mouseButton The mouse button that is released
      */
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
-        for(SettingComponent settingComponent : getSettingComponents())
-            settingComponent.mouseReleased(mouseX, mouseY, mouseButton);
+        for(SettingComponent settingComponent : getSettingComponents()) {
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.mouseReleased(mouseX, mouseY, mouseButton);
+            }
+        }
     }
 
     /**
@@ -188,8 +193,10 @@ public class ModuleButtonComponent implements TextRenderer {
         float offset = settingComponents.get(0).getY();
 
         for (SettingComponent settingComponent : getSettingComponents()) {
-            settingComponent.setY(offset);
-            offset += settingComponent.getHeight() + settingComponent.getSettingHeight() + .5f;
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.setY(offset);
+                offset += settingComponent.getHeight() + settingComponent.getSettingHeight() + .5f;
+            }
         }
     }
 
@@ -199,8 +206,11 @@ public class ModuleButtonComponent implements TextRenderer {
      * @param keyCode The key code of the character
      */
     public void keyTyped(char typedChar, int keyCode) {
-        for(SettingComponent settingComponent : getSettingComponents())
-            settingComponent.keyTyped(typedChar, keyCode);
+        for(SettingComponent settingComponent : getSettingComponents()) {
+            if (settingComponent.getSetting().isVisible()) {
+                settingComponent.keyTyped(typedChar, keyCode);
+            }
+        }
     }
 
     public boolean isMouseOnButton(int mouseX, int mouseY) {
