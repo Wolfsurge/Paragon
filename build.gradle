@@ -36,7 +36,9 @@ mixin {
     defaultObfuscationEnv searge
 
     sourceSets {
-        ext.refmap = "mixins.paragon.refmap.json"
+        main {
+            ext.refmap = "mixins.paragon.refmap.json"
+        }
     }
 }
 
@@ -44,7 +46,7 @@ repositories {
     mavenCentral()
 
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-    maven { url = 'https://jitpack.io' }
+    maven { url = "https://jitpack.io" }
 }
 
 dependencies {
@@ -56,8 +58,9 @@ dependencies {
         exclude module: 'log4j-core'
     }
 
+    compile "com.github.ZeroMemes:Alpine:1.5"
+    compile group: 'net.jodah', name: 'typetools', version: '0.6.3'
     compile group: 'org.json', name: 'json', version: '20090211'
-    compile group: 'com.github.litarvan', name: 'OpenAuth', version: '1.1.2'
 }
 
 processResources {
@@ -92,9 +95,9 @@ jar {
     )
 }
 
-sourceSets { main { output.resourcesDir = output.classesDir } }
+build.dependsOn(shadowJar)
+
+// sourceSets { main { output.resourcesDir = output.classesDir } }
 
 // Should you want to run the client through IDEA, comment the below line by putting '//' before it
-// sourceSets { sourceSets -> main }
-
-build.dependsOn(shadowJar)
+sourceSets { sourceSets -> main }
