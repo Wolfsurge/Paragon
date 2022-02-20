@@ -96,8 +96,3 @@ jar {
 }
 
 build.dependsOn(shadowJar)
-
-// sourceSets { main { output.resourcesDir = output.classesDir } }
-
-// Should you want to run the client through IDEA, comment the below line by putting '//' before it
-sourceSets { sourceSets -> main }
