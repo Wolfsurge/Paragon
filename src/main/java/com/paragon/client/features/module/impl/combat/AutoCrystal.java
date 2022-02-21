@@ -17,6 +17,8 @@ import com.paragon.client.features.module.settings.impl.ModeSetting;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
 import com.paragon.client.managers.rotation.Rotation;
 import com.paragon.client.managers.rotation.RotationType;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -200,8 +202,8 @@ public class AutoCrystal extends Module {
         }
     }
 
-    @SubscribeEvent
-    public void onPacketPreReceive(PacketEvent.PreReceive event) {
+    @EventHandler
+    private final Listener<PacketEvent.PreReceive> preReceiveListener = new Listener<>(event -> {
         // Check that we want to instant break, and we have a target
         if (instant.isEnabled() && currentTarget != null) {
             if (event.getPacket() instanceof SPacketSpawnObject) {
@@ -228,7 +230,7 @@ public class AutoCrystal extends Module {
                 }
             }
         }
-    }
+    });
 
     /* Place Utils */
 
@@ -290,11 +292,13 @@ public class AutoCrystal extends Module {
         // Get entity list
         List<Entity> playerEntities = new ArrayList<>();
 
-        mc.world.loadedEntityList.forEach(entity -> {
-            if (entity instanceof EntityOtherPlayerMP && entity.getDistance(mc.player) <= targetRange.getValue()) {
-                playerEntities.add(entity);
-            }
-        });
+        try {
+            mc.world.loadedEntityList.forEach(entity -> {
+                if (entity instanceof EntityOtherPlayerMP && entity.getDistance(mc.player) <= targetRange.getValue()) {
+                    playerEntities.add(entity);
+                }
+            });
+        } catch (Exception ignored) {}
 
         // Sort
         if(targetPriority.is("Closest")) playerEntities.sort(Comparator.comparingDouble(entity -> entity.getDistance(mc.player)));

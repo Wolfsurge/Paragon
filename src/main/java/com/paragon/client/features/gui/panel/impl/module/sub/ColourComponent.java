@@ -1,5 +1,6 @@
 package com.paragon.client.features.gui.panel.impl.module.sub;
 
+import com.paragon.api.util.miscellaneous.MathUtils;
 import com.paragon.api.util.render.ColourUtil;
 import com.paragon.api.util.render.GuiUtil;
 import com.paragon.api.util.render.RenderUtil;
@@ -8,6 +9,7 @@ import com.paragon.client.features.module.impl.other.Colours;
 import com.paragon.client.features.module.impl.other.GUI;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
+import com.paragon.client.features.module.settings.impl.NumberSetting;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -109,7 +111,7 @@ public class ColourComponent extends SettingComponent {
         if (pickingHue) {
             float restrictedX = Math.min(Math.max(hueSliderX, mouseX), hueSliderX + hueSliderWidth);
             color[0] = (restrictedX - hueSliderX) / hueSliderWidth;
-            color[0] = Math.min(1, color[0]);
+            color[0] = Math.min(0.97f, color[0]);
         }
 
         if (pickingAlpha) {
@@ -122,8 +124,8 @@ public class ColourComponent extends SettingComponent {
             float restrictedY = Math.min(Math.max(pickerY, mouseY), pickerY + pickerHeight);
             color[1] = (restrictedX - pickerX) / pickerWidth;
             color[2] = 1 - (restrictedY - pickerY) / pickerHeight;
-            color[2] = (float) Math.max(0.04000002, color[2]);
-            color[1] = (float) Math.max(0.022222223, color[1]);
+            color[2] = (float) Math.max(0.03, color[2]);
+            color[1] = (float) Math.max(0.03, color[1]);
         }
 
         int selectedColor = Color.HSBtoRGB(color[0], 1.0f, 1.0f);

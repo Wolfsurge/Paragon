@@ -1,5 +1,6 @@
 package com.paragon.client.features.module.impl.render;
 
+import akka.routing.Listen;
 import com.paragon.api.events.render.entity.RenderEntityEvent;
 import com.paragon.api.util.render.OutlineUtil;
 import com.paragon.api.util.render.RenderUtil;
@@ -10,6 +11,8 @@ import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ColourSetting;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityEnderCrystal;
@@ -56,8 +59,8 @@ public class ESP extends Module {
         }
     }
 
-    @SubscribeEvent
-    public void onRenderEntityModel(RenderEntityEvent event) {
+    @EventHandler
+    private final Listener<RenderEntityEvent> renderEntityEventListener = new Listener<>(event -> {
         if(isEntityValid(event.getEntity()) && mode.is("Outline")) {
             OutlineUtil.renderOne(lineWidth.getValue());
             event.renderModel();
@@ -70,7 +73,7 @@ public class ESP extends Module {
             OutlineUtil.renderFive();
             event.renderModel();
         }
-    }
+    });
 
     @SubscribeEvent
     public void onRenderWorld(RenderWorldLastEvent event) {

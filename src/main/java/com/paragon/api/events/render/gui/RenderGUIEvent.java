@@ -1,6 +1,5 @@
 package com.paragon.api.events.render.gui;
 
-
-import net.minecraftforge.fml.common.eventhandler.Event;
+import com.paragon.api.events.Event;
 
 public class RenderGUIEvent extends Event {}

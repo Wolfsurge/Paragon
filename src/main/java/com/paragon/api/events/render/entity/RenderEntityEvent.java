@@ -1,8 +1,8 @@
 package com.paragon.api.events.render.entity;
 
+import com.paragon.api.events.Event;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * @author Wolfsurge

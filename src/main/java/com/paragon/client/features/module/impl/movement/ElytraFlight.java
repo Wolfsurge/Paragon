@@ -7,6 +7,8 @@ import com.paragon.client.features.module.Module;
 import com.paragon.client.features.module.settings.impl.BooleanSetting;
 import com.paragon.client.features.module.settings.impl.ModeSetting;
 import com.paragon.client.features.module.settings.impl.NumberSetting;
+import me.zero.alpine.listener.EventHandler;
+import me.zero.alpine.listener.Listener;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ElytraFlight extends Module {
@@ -22,14 +24,14 @@ public class ElytraFlight extends Module {
         this.addSettings(mode, speed);
     }
 
-    @SubscribeEvent
-    public void onTravel(TravelEvent event) {
+    @EventHandler
+    private final Listener<TravelEvent> travelEventListener = new Listener<>(event -> {
         if (nullCheck()) {
             return;
         }
 
         if (mc.player.isElytraFlying()) {
-            event.setCanceled(true);
+            event.cancel();
 
             float forward = mc.player.movementInput.moveForward;
             float strafe = mc.player.movementInput.moveStrafe;
@@ -65,7 +67,7 @@ public class ElytraFlight extends Module {
                 mc.player.motionZ = 0;
             }
         }
-    }
+    });
 
 
 }

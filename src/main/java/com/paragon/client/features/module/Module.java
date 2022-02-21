@@ -86,6 +86,7 @@ public class Module {
      */
     public void enable() {
         MinecraftForge.EVENT_BUS.register(this);
+        Paragon.EVENT_BUS.subscribe(this);
         onEnable();
     }
 
@@ -94,6 +95,7 @@ public class Module {
      */
     public void disable() {
         MinecraftForge.EVENT_BUS.unregister(this);
+        Paragon.EVENT_BUS.unsubscribe(this);
         onDisable();
     }
 

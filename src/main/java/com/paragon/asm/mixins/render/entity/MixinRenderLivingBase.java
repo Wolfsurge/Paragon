@@ -1,6 +1,7 @@
 package com.paragon.asm.mixins.render.entity;
 
 import com.paragon.api.events.render.entity.RenderEntityEvent;
+import com.paragon.client.Paragon;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -24,6 +25,6 @@ public abstract class MixinRenderLivingBase<T extends EntityLivingBase> extends 
     @Inject(method = "renderModel", at = @At("TAIL"))
     public void renderModel(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, CallbackInfo ci) {
         RenderEntityEvent renderEntityEvent = new RenderEntityEvent(mainModel, entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
-        MinecraftForge.EVENT_BUS.post(renderEntityEvent);
+        Paragon.EVENT_BUS.post(renderEntityEvent);
     }
 }
