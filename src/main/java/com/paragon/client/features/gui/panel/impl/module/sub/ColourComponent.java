@@ -124,8 +124,8 @@ public class ColourComponent extends SettingComponent {
             float restrictedY = Math.min(Math.max(pickerY, mouseY), pickerY + pickerHeight);
             color[1] = (restrictedX - pickerX) / pickerWidth;
             color[2] = 1 - (restrictedY - pickerY) / pickerHeight;
-            color[2] = (float) Math.max(0.03, color[2]);
-            color[1] = (float) Math.max(0.03, color[1]);
+            color[2] = Math.max(0, color[2]);
+            color[1] = Math.max(0, color[1]);
         }
 
         int selectedColor = Color.HSBtoRGB(color[0], 1.0f, 1.0f);
