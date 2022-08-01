@@ -86,6 +86,7 @@ class ModuleManager {
             Blink(),
             BuildHeight(),
             ChatModifications(),
+            ChorusControl(),
             Cryptic,
             CustomWorld(),
             DonkeyAlert,

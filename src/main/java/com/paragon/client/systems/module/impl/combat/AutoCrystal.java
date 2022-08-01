@@ -9,6 +9,7 @@ import com.paragon.api.util.entity.EntityUtil;
 import com.paragon.api.util.player.InventoryUtil;
 import com.paragon.api.util.player.PlayerUtil;
 import com.paragon.api.util.player.RotationUtil;
+import com.paragon.api.util.render.ColourUtil;
 import com.paragon.api.util.render.RenderUtil;
 import com.paragon.api.util.world.BlockUtil;
 import com.paragon.asm.mixins.accessor.IPlayerControllerMP;
@@ -449,7 +450,7 @@ public class AutoCrystal extends Module {
         if (render.getValue() && currentPlacement != null && place.getValue()) {
             // Render fill
             if (renderMode.getValue().equals(Render.FILL) || renderMode.getValue().equals(Render.BOTH)) {
-                RenderUtil.drawFilledBox(BlockUtil.getBlockBox(currentPlacement.getPosition()), renderColour.getValue());
+                RenderUtil.drawFilledBox(BlockUtil.getBlockBox(currentPlacement.getPosition()), ColourUtil.integrateAlpha(renderColour.getValue(), renderColour.getAlpha()));
             }
 
             // Render outline
